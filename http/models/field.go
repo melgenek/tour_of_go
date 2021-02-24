@@ -6,16 +6,28 @@ const width = 3500
 const length = 3500
 const depth = 10
 
-type Field = [width][length][depth]bool
+type Cell struct {
+	HasGold bool
+	goldAt  int
+	depth   int
+}
 
-func CreateField() Field {
+type Field struct {
+	Cells [width][length]*Cell
+}
+
+func CreateField() *Field {
 	var field Field
 	for i := 0; i < width; i++ {
 		for j := 0; j < length; j++ {
-			for k := 0; k < depth; k++ {
-				field[i][j][k] = rand.Intn(2) == 1
-			}
+			field.Cells[i][j] = &Cell{HasGold: rand.Intn(5) == 1, goldAt: rand.Intn(depth), depth: 0}
 		}
 	}
-	return field
+	return &field
+}
+
+func (field *Field) Dig(posX int, posY int) bool {
+	cell := field.Cells[posX][posY]
+	cell.depth += 1
+	return cell.depth == cell.goldAt
 }

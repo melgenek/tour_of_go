@@ -1,7 +1,7 @@
 package main
 
 import (
-	"./models"
+	"../models"
 	"encoding/json"
 	"net/http"
 )
@@ -16,10 +16,8 @@ func explore(field *models.Field) Endpoint {
 		sum := 0
 		for i := area.PosX; i < area.PosX+area.SizeX; i++ {
 			for j := area.PosY; j < area.PosY+area.SizeY; j++ {
-				for _, n := range field[i][j] {
-					if n {
-						sum += 1
-					}
+				if field.Cells[i][j].HasGold {
+					sum += 1
 				}
 			}
 		}
@@ -40,12 +38,42 @@ func licenses(licenses *models.Licenses) Endpoint {
 	}
 }
 
+func dig(field *models.Field) Endpoint {
+	return func(w http.ResponseWriter, req *http.Request) {
+		switch req.Method {
+		case http.MethodPost:
+			digReq := models.DigRequest{}
+			json.NewDecoder(req.Body).Decode(&digReq)
+
+			if field.Dig(digReq.PosX, digReq.PosY) {
+				w.Header().Set("Content-Type", "application/json")
+				json.NewEncoder(w).Encode([]string{"Gold!"})
+			} else {
+				w.Header().Set("Content-Type", "application/json")
+				json.NewEncoder(w).Encode([]string{})
+			}
+		}
+	}
+}
+
+func cash() Endpoint {
+	return func(w http.ResponseWriter, req *http.Request) {
+		switch req.Method {
+		case http.MethodPost:
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode([]int{1})
+		}
+	}
+}
+
 func main() {
 	field := models.CreateField()
 	licenseList := models.NewLicenses()
 
-	http.HandleFunc("/explore", explore(&field))
+	http.HandleFunc("/explore", explore(field))
 	http.HandleFunc("/licenses", licenses(licenseList))
+	http.HandleFunc("/dig", dig(field))
+	http.HandleFunc("/cash", cash())
 
 	http.ListenAndServe(":8000", nil)
 }
