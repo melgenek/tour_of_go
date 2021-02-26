@@ -1,0 +1,61 @@
+60s
+
+Final balance: 67123
+
+increase the buffer sizes
+use dynamically calculated parallelism
+
+Processed 0
+Liceses: 0
+----------
+Explore: 0. Dig: 0. Gold: 0. Cash 0
+Total = 15680MiB, Free = 1376MiB, UsedPercent = 68.488485
+TotalAlloc = 0 MiB      Alloc = 0 MiB   Sys = 69 MiB
+Cpu: 91.463415. Process: 32.501211
+----------
+Liceses: 1
+Explore: 0. Dig: 0. Gold: 9. Cash 4437
+Liceses: 42
+Explore: 0. Dig: 0. Gold: 0. Cash 4999
+Liceses: 31
+Explore: 0. Dig: 0. Gold: 0. Cash 5000
+----------
+Total = 15680MiB, Free = 1367MiB, UsedPercent = 68.573087
+TotalAlloc = 554 MiB    Alloc = 25 MiB  Sys = 138 MiB
+Cpu: 22.500000. Process: 50.140442
+----------
+Liceses: 43
+Explore: 0. Dig: 0. Gold: 0. Cash 4999
+Processed 20000
+Liceses: 38
+Explore: 0. Dig: 0. Gold: 0. Cash 5000
+Liceses: 35
+Explore: 0. Dig: 0. Gold: 0. Cash 4999
+----------
+Total = 15680MiB, Free = 1235MiB, UsedPercent = 69.416118
+TotalAlloc = 824 MiB    Alloc = 58 MiB  Sys = 206 MiB
+Cpu: 37.349398. Process: 43.396663
+----------
+Liceses: 35
+Explore: 0. Dig: 0. Gold: 0. Cash 5000
+Liceses: 45
+Explore: 0. Dig: 0. Gold: 0. Cash 4999
+Liceses: 35
+Explore: 0. Dig: 0. Gold: 0. Cash 4998
+----------
+Total = 15680MiB, Free = 1104MiB, UsedPercent = 70.218568
+TotalAlloc = 1071 MiB   Alloc = 100 MiB Sys = 208 MiB
+Cpu: 35.000000. Process: 40.467552
+----------
+Liceses: 43
+Explore: 0. Dig: 0. Gold: 0. Cash 5000
+Processed 40000
+Liceses: 34
+Explore: 0. Dig: 0. Gold: 0. Cash 5000
+Liceses: 26
+Explore: 0. Dig: 0. Gold: 2. Cash 4999
+----------
+Total = 15680MiB, Free = 856MiB, UsedPercent = 71.752018
+TotalAlloc = 1290 MiB   Alloc = 112 MiB Sys = 276 MiB
+Cpu: 14.814815. Process: 38.628042
+----------

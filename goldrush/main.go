@@ -6,6 +6,7 @@ import (
 	"goldrush/models"
 	"goldrush/utils"
 	"os"
+	"runtime"
 	"time"
 )
 
@@ -26,19 +27,24 @@ func main() {
 	mineClient := client.NewMineClient(address)
 
 	exploreChan := make(chan Coordinates)
-	digChan := make(chan models.ExploreResp, 200)
-	goldChan := make(chan string, 100)
-	cashChan := make(chan int, 1000)
+	digChan := make(chan models.ExploreResp, 1000)
+	goldChan := make(chan string, 1000)
+	cashChan := make(chan int, 5000)
 
-	getLicenseLease := issueLicense(cashChan, mineClient)
+	getLicenseLease := issueLicense(mineClient, cashChan, isRemote)
 
-	for w := 1; w <= 10; w++ {
+	cpus := runtime.NumCPU()
+	explorers := cpus * 2
+	diggers := cpus * 2
+	cashiers := 1
+
+	for w := 1; w <= explorers; w++ {
 		go explore(mineClient, exploreChan, digChan)
 	}
-	for w := 1; w <= 5; w++ {
+	for w := 1; w <= diggers; w++ {
 		go dig(mineClient, digChan, getLicenseLease, goldChan)
 	}
-	for w := 1; w <= 3; w++ {
+	for w := 1; w <= cashiers; w++ {
 		go cash(mineClient, goldChan, cashChan)
 	}
 	go reportMetrics(mineClient, isRemote)
@@ -65,7 +71,7 @@ func main() {
 	}
 }
 
-func issueLicense(cashChan chan int, mineClient *client.MineClient) func(callback func(int)) {
+func issueLicense(mineClient *client.MineClient, cashChan chan int, isRemote bool) func(callback func(int)) {
 	licenseIdChannel := make(chan int, 50)
 	licenseIdAckChannel := make(chan int, 50)
 	licenses := make(map[int]*models.License)
@@ -105,6 +111,17 @@ func issueLicense(cashChan chan int, mineClient *client.MineClient) func(callbac
 				} else {
 					time.Sleep(10 * time.Millisecond)
 				}
+			}
+		}
+	}()
+
+	go func() {
+		for {
+			fmt.Printf("Liceses: %d\n", len(licenseIdChannel))
+			if isRemote {
+				time.Sleep(5 * time.Minute)
+			} else {
+				time.Sleep(10 * time.Second)
 			}
 		}
 	}()
