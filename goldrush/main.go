@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"goldrush/client"
 	"goldrush/models"
+	"goldrush/utils"
 	"os"
 	"time"
 )
@@ -170,33 +171,16 @@ func explore(mineClient *client.MineClient, exploreChan chan Coordinates, digCha
 func reportMetrics(mineClient *client.MineClient, isRemote bool) {
 	for {
 		if isRemote {
-			time.Sleep(5*time.Minute - 20*time.Millisecond)
+			time.Sleep(5*time.Minute - 10*time.Second)
 		} else {
-			time.Sleep(1*time.Minute - 20*time.Millisecond)
+			time.Sleep(1*time.Minute - 10*time.Second)
 		}
-		mineClient.ReportMetrics()
+
+		fmt.Println("----------")
+		utils.PrintMemoryUsage()
+		utils.PrintCpuUsage()
+		utils.PrintAvgUsage()
+		mineClient.PrintMetrics()
+		fmt.Println("----------")
 	}
 }
-
-/**
-
-for i := 0; i < 3500; i++ {
-	for j := 0; j < 3500; j++ {
-		exploreRes, _ := mineClient.Explore(i, j)
-		left := exploreRes.Amount
-		for k := 1; k <= 10 && left > 0; {
-			licenseId := <-licenseChan
-			digResult, digErr := mineClient.Dig(i, j, k, licenseId)
-			if digErr != nil {
-				licenseChan <- licenseId
-			} else {
-				k++
-				for g := 0; g < len(digResult); g++ {
-					left--
-					_, _ = mineClient.Cash(digResult[g])
-				}
-			}
-		}
-	}
-}
-*/

@@ -71,7 +71,7 @@ func instrumentTransport(next http.RoundTripper, registry *prometheus.Registry) 
 	}
 }
 
-func (client *MineClient) ReportMetrics() {
+func (client *MineClient) PrintMetrics() {
 	gathering, err := client.registry.Gather()
 	if err != nil {
 		fmt.Println(err)
@@ -86,7 +86,6 @@ func (client *MineClient) ReportMetrics() {
 	}
 
 	fmt.Print(out.String())
-	fmt.Println("----------")
 }
 
 func (client *MineClient) url(path string) string {
