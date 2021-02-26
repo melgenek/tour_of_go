@@ -1,8 +1,8 @@
 package main
 
 import (
-	"./client"
 	"fmt"
+	"goldrush/client"
 	"os"
 	"sync"
 	"time"
@@ -68,8 +68,8 @@ func main() {
 					k++
 					for g := 0; g < len(digResult); g++ {
 						left--
-						mineClient.Cash(digResult[g])
-						fmt.Printf("%v at (%d,%d,%d)\n", digResult[g], i, j, k)
+						_, goldErr := mineClient.Cash(digResult[g])
+						printErr(goldErr)
 					}
 				}
 			}

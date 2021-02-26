@@ -1,10 +1,10 @@
 package client
 
 import (
-	"../models"
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"goldrush/models"
 	"net/http"
 )
 
@@ -49,9 +49,13 @@ func (client *MineClient) IssueLicense() (models.License, error) {
 	return license, err
 }
 
-func (client *MineClient) Cash(gold string) error {
-	_, err := http.Post(client.url("cash"), "application/json", bytes.NewBufferString(gold))
-	return err
+func (client *MineClient) Cash(gold string) ([]int, error) {
+	req, _ := json.Marshal(gold)
+	var wallet []int
+	err := client.safePost("cash", req, successfulResponse, func(res *http.Response) error {
+		return json.NewDecoder(res.Body).Decode(&wallet)
+	})
+	return wallet, err
 }
 
 type isSuccess func(*http.Response) bool
