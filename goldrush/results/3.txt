@@ -1,0 +1,61 @@
+channels
+Final balance: 40211
+
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/cash",le="0.1"} 344
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/cash",le="1"} 364
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/cash",le="5"} 364
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/cash",le="10"} 364
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/cash",le="+Inf"} 364
+request_duration_histogram_seconds_sum{code="200",method="post",path="/cash"} 19.552706808999993
+request_duration_histogram_seconds_count{code="200",method="post",path="/cash"} 364
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/dig",le="0.1"} 345
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/dig",le="1"} 364
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/dig",le="5"} 364
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/dig",le="10"} 364
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/dig",le="+Inf"} 364
+request_duration_histogram_seconds_sum{code="200",method="post",path="/dig"} 19.329257307
+request_duration_histogram_seconds_count{code="200",method="post",path="/dig"} 364
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/explore",le="0.1"} 21779
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/explore",le="1"} 23322
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/explore",le="5"} 23322
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/explore",le="10"} 23322
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/explore",le="+Inf"} 23322
+request_duration_histogram_seconds_sum{code="200",method="post",path="/explore"} 1639.5050914520075
+request_duration_histogram_seconds_count{code="200",method="post",path="/explore"} 23322
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/licenses",le="0.1"} 798
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/licenses",le="1"} 842
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/licenses",le="5"} 842
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/licenses",le="10"} 842
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/licenses",le="+Inf"} 842
+request_duration_histogram_seconds_sum{code="200",method="post",path="/licenses"} 43.300781546999936
+request_duration_histogram_seconds_count{code="200",method="post",path="/licenses"} 842
+request_duration_histogram_seconds_bucket{code="404",method="post",path="/dig",le="0.1"} 2060
+request_duration_histogram_seconds_bucket{code="404",method="post",path="/dig",le="1"} 2162
+request_duration_histogram_seconds_bucket{code="404",method="post",path="/dig",le="5"} 2162
+request_duration_histogram_seconds_bucket{code="404",method="post",path="/dig",le="10"} 2162
+request_duration_histogram_seconds_bucket{code="404",method="post",path="/dig",le="+Inf"} 2162
+request_duration_histogram_seconds_sum{code="404",method="post",path="/dig"} 112.94028844500002
+request_duration_histogram_seconds_count{code="404",method="post",path="/dig"} 2162
+request_duration_histogram_seconds_bucket{code="502",method="post",path="/licenses",le="0.1"} 2332
+request_duration_histogram_seconds_bucket{code="502",method="post",path="/licenses",le="1"} 2332
+request_duration_histogram_seconds_bucket{code="502",method="post",path="/licenses",le="5"} 2332
+request_duration_histogram_seconds_bucket{code="502",method="post",path="/licenses",le="10"} 2332
+request_duration_histogram_seconds_bucket{code="502",method="post",path="/licenses",le="+Inf"} 2332
+request_duration_histogram_seconds_sum{code="502",method="post",path="/licenses"} 11.116935629999995
+request_duration_histogram_seconds_count{code="502",method="post",path="/licenses"} 2332
+request_duration_histogram_seconds_bucket{code="503",method="post",path="/cash",le="0.1"} 57
+request_duration_histogram_seconds_bucket{code="503",method="post",path="/cash",le="1"} 60
+request_duration_histogram_seconds_bucket{code="503",method="post",path="/cash",le="5"} 60
+request_duration_histogram_seconds_bucket{code="503",method="post",path="/cash",le="10"} 60
+request_duration_histogram_seconds_bucket{code="503",method="post",path="/cash",le="+Inf"} 60
+request_duration_histogram_seconds_sum{code="503",method="post",path="/cash"} 3.4264754349999995
+request_duration_histogram_seconds_count{code="503",method="post",path="/cash"} 60
+request_duration_histogram_seconds_bucket{code="504",method="post",path="/licenses",le="0.1"} 1041
+request_duration_histogram_seconds_bucket{code="504",method="post",path="/licenses",le="1"} 1041
+request_duration_histogram_seconds_bucket{code="504",method="post",path="/licenses",le="5"} 1041
+request_duration_histogram_seconds_bucket{code="504",method="post",path="/licenses",le="10"} 1041
+request_duration_histogram_seconds_bucket{code="504",method="post",path="/licenses",le="+Inf"} 1041
+request_duration_histogram_seconds_sum{code="504",method="post",path="/licenses"} 5.111443292999997
+request_duration_histogram_seconds_count{code="504",method="post",path="/licenses"} 1041
+----------
+
