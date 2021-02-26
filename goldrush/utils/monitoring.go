@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/shirou/gopsutil/v3/cpu"
 	"github.com/shirou/gopsutil/v3/mem"
+	"github.com/shirou/gopsutil/v3/process"
+	"os"
 	"runtime"
 	"time"
 )
@@ -18,8 +20,11 @@ func PrintMemoryUsage() {
 }
 
 func PrintCpuUsage() {
+	process, _ := process.NewProcess(int32(os.Getpid()))
+	cpuPercent, _ := process.CPUPercent()
+
 	last1Ms, _ := cpu.Percent(100*time.Millisecond, false)
-	fmt.Printf("Cpu: %f\n", last1Ms[0])
+	fmt.Printf("Cpu: %f. Process: %f\n", last1Ms[0], cpuPercent)
 }
 
 func bToMb(b uint64) uint64 {

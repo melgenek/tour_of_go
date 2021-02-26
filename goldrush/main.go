@@ -170,16 +170,17 @@ func explore(mineClient *client.MineClient, exploreChan chan Coordinates, digCha
 
 func reportMetrics(mineClient *client.MineClient, isRemote bool) {
 	for {
-		if isRemote {
-			time.Sleep(5*time.Minute - 5*time.Second)
-		} else {
-			time.Sleep(1*time.Minute - 5*time.Second)
-		}
+		//if isRemote {
+		//	time.Sleep(5*time.Minute - 5*time.Second)
+		//} else {
+		//	time.Sleep(1*time.Minute - 5*time.Second)
+		//}
 
 		fmt.Println("----------")
 		utils.PrintMemoryUsage()
 		utils.PrintCpuUsage()
-		mineClient.PrintMetrics()
+		//mineClient.PrintMetrics()
 		fmt.Println("----------")
+		time.Sleep(30 * time.Second)
 	}
 }
