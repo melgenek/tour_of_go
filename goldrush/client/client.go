@@ -37,7 +37,7 @@ func instrumentTransport(next http.RoundTripper, registry *prometheus.Registry) 
 	duration := prometheus.NewHistogramVec(
 		prometheus.HistogramOpts{
 			Name:    "request_duration_histogram_seconds",
-			Buckets: []float64{.1, 1, 5, 10},
+			Buckets: []float64{.1, 1},
 		},
 		[]string{"code", "method", "path"},
 	)
@@ -117,8 +117,8 @@ func (client *MineClient) Dig(posX int, posY int, depth int, licenseId int) ([]s
 	return gold, err
 }
 
-func (client *MineClient) IssueLicense() (models.License, error) {
-	req, _ := json.Marshal([]string{})
+func (client *MineClient) IssueLicense(cash []int) (models.License, error) {
+	req, _ := json.Marshal(cash)
 	license := models.License{}
 	err := client.safePost("licenses", req, successfulResponse, func(res *http.Response) error {
 		return json.NewDecoder(res.Body).Decode(&license)

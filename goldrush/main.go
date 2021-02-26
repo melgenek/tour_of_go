@@ -19,10 +19,11 @@ func main() {
 	}
 	mineClient := client.NewMineClient(address)
 
-	licenseChan := make(chan int, 30)
+	licenseChan := make(chan int, 27)
 	exploreChan := make(chan Coordinates, 1000)
 	digChan := make(chan models.ExploreResp, 200)
 	goldChan := make(chan []string, 100)
+	cashChan := make(chan int, 1000)
 
 	for w := 1; w <= 200; w++ {
 		go explore(mineClient, exploreChan, digChan)
@@ -31,25 +32,10 @@ func main() {
 		go dig(mineClient, digChan, licenseChan, goldChan)
 	}
 	for w := 1; w <= 20; w++ {
-		go cash(mineClient, goldChan)
+		go cash(mineClient, goldChan, cashChan)
 	}
 	go reportMetrics(mineClient)
-
-	go func() {
-		for {
-			currentLicenses := len(licenseChan)
-			if currentLicenses < 30 && currentLicenses%3 == 0 {
-				license, licenseErr := mineClient.IssueLicense()
-				if licenseErr == nil {
-					for l := 0; l < license.DigAllowed; l++ {
-						licenseChan <- license.Id
-					}
-				}
-			} else {
-				time.Sleep(10 * time.Millisecond)
-			}
-		}
-	}()
+	go issueLicense(cashChan, mineClient, licenseChan)
 
 	for i := 0; i < 3500; i++ {
 		for j := 0; j < 3500; j++ {
@@ -58,12 +44,36 @@ func main() {
 	}
 }
 
-func cash(mineClient *client.MineClient, goldChan chan []string) {
+func issueLicense(cashChan chan int, mineClient *client.MineClient, licenseChan chan int) {
+	for {
+		select {
+		case cash := <-cashChan:
+			license, licenseErr := mineClient.IssueLicense([]int{cash})
+			if licenseErr == nil {
+				for l := 0; l < license.DigAllowed; l++ {
+					licenseChan <- license.Id
+				}
+			}
+		default:
+			license, licenseErr := mineClient.IssueLicense([]int{})
+			if licenseErr == nil {
+				for l := 0; l < license.DigAllowed; l++ {
+					licenseChan <- license.Id
+				}
+			}
+		}
+	}
+}
+
+func cash(mineClient *client.MineClient, goldChan chan []string, cashChan chan int) {
 	for gold := range goldChan {
 		for g := 0; g < len(gold); g++ {
 			for {
-				_, cashErr := mineClient.Cash(gold[g])
+				cash, cashErr := mineClient.Cash(gold[g])
 				if cashErr == nil {
+					for i := 0; i < len(cash); i++ {
+						cashChan <- cash[i]
+					}
 					break
 				}
 			}
