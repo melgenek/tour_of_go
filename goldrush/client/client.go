@@ -6,14 +6,80 @@ import (
 	"fmt"
 	"goldrush/models"
 	"net/http"
+	"strconv"
+	"strings"
+	"time"
+
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/prometheus/common/expfmt"
 )
 
 type MineClient struct {
-	Host string
+	host     string
+	client   *http.Client
+	registry *prometheus.Registry
+}
+
+func NewMineClient(host string) *MineClient {
+	registry := prometheus.NewRegistry()
+
+	return &MineClient{
+		host: host,
+		client: &http.Client{
+			Transport: instrumentTransport(http.DefaultTransport, registry),
+		},
+		registry: registry,
+	}
+}
+
+func instrumentTransport(next http.RoundTripper, registry *prometheus.Registry) promhttp.RoundTripperFunc {
+	duration := prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Name:    "request_duration_histogram_seconds",
+			Buckets: []float64{.1, 1, 5, 10},
+		},
+		[]string{"code", "method", "path"},
+	)
+	registry.MustRegister(duration)
+
+	return func(r *http.Request) (*http.Response, error) {
+		start := time.Now()
+		resp, err := next.RoundTrip(r)
+
+		labels := prometheus.Labels{}
+		labels["method"] = strings.ToLower(r.Method)
+		labels["path"] = strings.ToLower(r.URL.Path)
+		if err == nil {
+			labels["code"] = strconv.Itoa(resp.StatusCode)
+		} else {
+			labels["code"] = strconv.Itoa(555)
+		}
+		duration.With(labels).Observe(time.Since(start).Seconds())
+		return resp, err
+	}
+}
+
+func (client *MineClient) ReportMetrics() {
+	gathering, err := client.registry.Gather()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	out := &bytes.Buffer{}
+	for _, mf := range gathering {
+		mf.Help = nil
+		if _, err := expfmt.MetricFamilyToText(out, mf); err != nil {
+			panic(err)
+		}
+	}
+
+	fmt.Print(out.String())
+	fmt.Println("----------")
 }
 
 func (client *MineClient) url(path string) string {
-	return fmt.Sprintf("http://%s:8000/%s", client.Host, path)
+	return fmt.Sprintf("http://%s:8000/%s", client.host, path)
 }
 
 func (client *MineClient) Explore(posX int, posY int) (models.ExploreResp, error) {
@@ -62,7 +128,7 @@ type isSuccess func(*http.Response) bool
 type callback func(*http.Response) error
 
 func (client *MineClient) safePost(path string, req []byte, isSuccess isSuccess, responseCallback callback) error {
-	res, err := http.Post(client.url(path), "application/json", bytes.NewBuffer(req))
+	res, err := client.client.Post(client.url(path), "application/json", bytes.NewBuffer(req))
 	if err != nil {
 		return fmt.Errorf("The http error was '%s'. Path: /%s", err, path)
 	} else if !isSuccess(res) {
