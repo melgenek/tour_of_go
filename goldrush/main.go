@@ -32,13 +32,13 @@ func main() {
 
 	getLicenseLease := issueLicense(cashChan, mineClient)
 
-	for w := 1; w <= 200; w++ {
+	for w := 1; w <= 10; w++ {
 		go explore(mineClient, exploreChan, digChan)
 	}
-	for w := 1; w <= 300; w++ {
+	for w := 1; w <= 5; w++ {
 		go dig(mineClient, digChan, getLicenseLease, goldChan)
 	}
-	for w := 1; w <= 20; w++ {
+	for w := 1; w <= 3; w++ {
 		go cash(mineClient, goldChan, cashChan)
 	}
 	go reportMetrics(mineClient, isRemote)
@@ -179,7 +179,6 @@ func reportMetrics(mineClient *client.MineClient, isRemote bool) {
 		fmt.Println("----------")
 		utils.PrintMemoryUsage()
 		utils.PrintCpuUsage()
-		utils.PrintAvgUsage()
 		mineClient.PrintMetrics()
 		fmt.Println("----------")
 	}

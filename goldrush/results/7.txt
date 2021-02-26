@@ -1,41 +1,147 @@
 *** WORLD REPORT ***
 Configuration:  3500 x 3500 x 10
-Total treasures:        478223
-Total treasure value:   18686177
-Avg treasure value:     39.07
-Treasure density:       0.00390
-Treasure value density: 0.15254
+Total treasures:        475986
+Total treasure value:   18624604
+Avg treasure value:     39.13
+Treasure density:       0.00389
+Treasure value density: 0.15204
 * LAYER STATS *
 Layer#  Tot.treas       Tot.treas.val   Avg.treas.val   Treas.dens      Treas.val.dens
-     1      45405              320682            7.06      0.00371             0.02618
-     2      47225              668533           14.16      0.00386             0.05457
-     3      47655             1005135           21.09      0.00389             0.08205
-     4      47699             1348485           28.27      0.00389             0.11008
-     5      48519             1707190           35.19      0.00396             0.13936
-     6      48163             2036211           42.28      0.00393             0.16622
-     7      48816             2424641           49.67      0.00398             0.19793
-     8      48250             2716107           56.29      0.00394             0.22172
-     9      48298             3064791           63.46      0.00394             0.25019
-    10      48192             3394402           70.43      0.00393             0.27709
-Final balance: 18233
+     1      45272              320441            7.08      0.00370             0.02616
+     2      46675              660096           14.14      0.00381             0.05389
+     3      47391             1001171           21.13      0.00387             0.08173
+     4      48213             1356621           28.14      0.00394             0.11074
+     5      47864             1691784           35.35      0.00391             0.13810
+     6      48042             2042003           42.50      0.00392             0.16669
+     7      48266             2383980           49.39      0.00394             0.19461
+     8      48000             2723471           56.74      0.00392             0.22232
+     9      48102             3049641           63.40      0.00393             0.24895
+    10      48161             3395396           70.50      0.00393             0.27718
+Final balance: 66074
 
-*** WORLD REPORT ***
-Configuration:  3500 x 3500 x 10
-Total treasures:        478223
-Total treasure value:   18686177
-Avg treasure value:     39.07
-Treasure density:       0.00390
-Treasure value density: 0.15254
-* LAYER STATS *
-Layer#  Tot.treas       Tot.treas.val   Avg.treas.val   Treas.dens      Treas.val.dens
-     1      45405              320682            7.06      0.00371             0.02618
-     2      47225              668533           14.16      0.00386             0.05457
-     3      47655             1005135           21.09      0.00389             0.08205
-     4      47699             1348485           28.27      0.00389             0.11008
-     5      48519             1707190           35.19      0.00396             0.13936
-     6      48163             2036211           42.28      0.00393             0.16622
-     7      48816             2424641           49.67      0.00398             0.19793
-     8      48250             2716107           56.29      0.00394             0.22172
-     9      48298             3064791           63.46      0.00394             0.25019
-    10      48192             3394402           70.43      0.00393             0.27709
-Final balance: 18233
+10->5->3
+
+Processed 0
+Explore: 0. Dig: 0. Gold: 0. Cash 0
+Explore: 0. Dig: 0. Gold: 0. Cash 1000
+Explore: 0. Dig: 0. Gold: 0. Cash 999
+Explore: 0. Dig: 0. Gold: 0. Cash 1000
+Explore: 0. Dig: 0. Gold: 0. Cash 999
+Explore: 0. Dig: 0. Gold: 0. Cash 999
+Processed 20000
+----------
+Total = 15680MiB, Free = 519MiB, UsedPercent = 71.532192
+TotalAlloc = 452 MiB    Alloc = 57 MiB  Sys = 140 MiB
+Cpu: 28.750000
+1 min = 3.030000        5 min = 2.840000        15 min = 2.450000
+# TYPE in_flight_total gauge
+in_flight_total 15
+# TYPE request_duration_histogram_seconds histogram
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/cash",le="0.1"} 836
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/cash",le="1"} 836
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/cash",le="+Inf"} 836
+request_duration_histogram_seconds_sum{code="200",method="post",path="/cash"} 21.47049892099997
+request_duration_histogram_seconds_count{code="200",method="post",path="/cash"} 836
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/dig",le="0.1"} 838
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/dig",le="1"} 838
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/dig",le="+Inf"} 838
+request_duration_histogram_seconds_sum{code="200",method="post",path="/dig"} 21.954830802999997
+request_duration_histogram_seconds_count{code="200",method="post",path="/dig"} 838
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/explore",le="0.1"} 21358
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/explore",le="1"} 21358
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/explore",le="+Inf"} 21368
+request_duration_histogram_seconds_sum{code="200",method="post",path="/explore"} 520.9838102349979
+request_duration_histogram_seconds_count{code="200",method="post",path="/explore"} 21368
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/licenses",le="0.1"} 909
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/licenses",le="1"} 909
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/licenses",le="+Inf"} 910
+request_duration_histogram_seconds_sum{code="200",method="post",path="/licenses"} 25.10886668399998
+request_duration_histogram_seconds_count{code="200",method="post",path="/licenses"} 910
+request_duration_histogram_seconds_bucket{code="404",method="post",path="/dig",le="0.1"} 3653
+request_duration_histogram_seconds_bucket{code="404",method="post",path="/dig",le="1"} 3653
+request_duration_histogram_seconds_bucket{code="404",method="post",path="/dig",le="+Inf"} 3653
+request_duration_histogram_seconds_sum{code="404",method="post",path="/dig"} 94.1058676969999
+request_duration_histogram_seconds_count{code="404",method="post",path="/dig"} 3653
+request_duration_histogram_seconds_bucket{code="502",method="post",path="/licenses",le="0.1"} 1
+request_duration_histogram_seconds_bucket{code="502",method="post",path="/licenses",le="1"} 1
+request_duration_histogram_seconds_bucket{code="502",method="post",path="/licenses",le="+Inf"} 1
+request_duration_histogram_seconds_sum{code="502",method="post",path="/licenses"} 0.055815067
+request_duration_histogram_seconds_count{code="502",method="post",path="/licenses"} 1
+request_duration_histogram_seconds_bucket{code="503",method="post",path="/cash",le="0.1"} 127
+request_duration_histogram_seconds_bucket{code="503",method="post",path="/cash",le="1"} 127
+request_duration_histogram_seconds_bucket{code="503",method="post",path="/cash",le="+Inf"} 127
+request_duration_histogram_seconds_sum{code="503",method="post",path="/cash"} 3.183423375
+request_duration_histogram_seconds_count{code="503",method="post",path="/cash"} 127
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/explore",le="0.1"} 169
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/explore",le="1"} 169
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/explore",le="+Inf"} 189
+request_duration_histogram_seconds_sum{code="555",method="post",path="/explore"} 20.570331129999985
+request_duration_histogram_seconds_count{code="555",method="post",path="/explore"} 189
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/licenses",le="0.1"} 19
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/licenses",le="1"} 19
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/licenses",le="+Inf"} 21
+request_duration_histogram_seconds_sum{code="555",method="post",path="/licenses"} 2.0565614
+request_duration_histogram_seconds_count{code="555",method="post",path="/licenses"} 21
+----------
+Explore: 0. Dig: 0. Gold: 0. Cash 1000
+Explore: 0. Dig: 0. Gold: 0. Cash 999
+Explore: 0. Dig: 0. Gold: 0. Cash 1000
+Explore: 0. Dig: 0. Gold: 0. Cash 1000
+Explore: 0. Dig: 0. Gold: 0. Cash 998
+Processed 40000
+Explore: 0. Dig: 0. Gold: 0. Cash 1000
+----------
+Total = 15680MiB, Free = 152MiB, UsedPercent = 73.420817
+TotalAlloc = 895 MiB    Alloc = 153 MiB Sys = 275 MiB
+Cpu: 34.482759
+1 min = 4.020000        5 min = 3.070000        15 min = 2.550000
+# TYPE in_flight_total gauge
+in_flight_total 13
+# TYPE request_duration_histogram_seconds histogram
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/cash",le="0.1"} 1640
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/cash",le="1"} 1640
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/cash",le="+Inf"} 1640
+request_duration_histogram_seconds_sum{code="200",method="post",path="/cash"} 43.34373633099997
+request_duration_histogram_seconds_count{code="200",method="post",path="/cash"} 1640
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/dig",le="0.1"} 1640
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/dig",le="1"} 1640
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/dig",le="+Inf"} 1640
+request_duration_histogram_seconds_sum{code="200",method="post",path="/dig"} 44.22161429000001
+request_duration_histogram_seconds_count{code="200",method="post",path="/dig"} 1640
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/explore",le="0.1"} 42418
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/explore",le="1"} 42418
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/explore",le="+Inf"} 42428
+request_duration_histogram_seconds_sum{code="200",method="post",path="/explore"} 1061.8217679749964
+request_duration_histogram_seconds_count{code="200",method="post",path="/explore"} 42428
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/licenses",le="0.1"} 1783
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/licenses",le="1"} 1783
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/licenses",le="+Inf"} 1784
+request_duration_histogram_seconds_sum{code="200",method="post",path="/licenses"} 49.32459260599995
+request_duration_histogram_seconds_count{code="200",method="post",path="/licenses"} 1784
+request_duration_histogram_seconds_bucket{code="404",method="post",path="/dig",le="0.1"} 7223
+request_duration_histogram_seconds_bucket{code="404",method="post",path="/dig",le="1"} 7223
+request_duration_histogram_seconds_bucket{code="404",method="post",path="/dig",le="+Inf"} 7223
+request_duration_histogram_seconds_sum{code="404",method="post",path="/dig"} 191.45388048199933
+request_duration_histogram_seconds_count{code="404",method="post",path="/dig"} 7223
+request_duration_histogram_seconds_bucket{code="502",method="post",path="/licenses",le="0.1"} 1
+request_duration_histogram_seconds_bucket{code="502",method="post",path="/licenses",le="1"} 1
+request_duration_histogram_seconds_bucket{code="502",method="post",path="/licenses",le="+Inf"} 1
+request_duration_histogram_seconds_sum{code="502",method="post",path="/licenses"} 0.055815067
+request_duration_histogram_seconds_count{code="502",method="post",path="/licenses"} 1
+request_duration_histogram_seconds_bucket{code="503",method="post",path="/cash",le="0.1"} 249
+request_duration_histogram_seconds_bucket{code="503",method="post",path="/cash",le="1"} 249
+request_duration_histogram_seconds_bucket{code="503",method="post",path="/cash",le="+Inf"} 249
+request_duration_histogram_seconds_sum{code="503",method="post",path="/cash"} 6.529397798
+request_duration_histogram_seconds_count{code="503",method="post",path="/cash"} 249
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/explore",le="0.1"} 169
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/explore",le="1"} 169
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/explore",le="+Inf"} 189
+request_duration_histogram_seconds_sum{code="555",method="post",path="/explore"} 20.570331129999985
+request_duration_histogram_seconds_count{code="555",method="post",path="/explore"} 189
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/licenses",le="0.1"} 19
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/licenses",le="1"} 19
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/licenses",le="+Inf"} 21
+request_duration_histogram_seconds_sum{code="555",method="post",path="/licenses"} 2.0565614
+request_duration_histogram_seconds_count{code="555",method="post",path="/licenses"} 21
+----------
+Explore: 0. Dig: 0. Gold: 0. Cash 999
