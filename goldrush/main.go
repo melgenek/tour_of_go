@@ -20,17 +20,17 @@ func main() {
 	mineClient := client.NewMineClient(address)
 
 	licenseChan := make(chan int, 30)
-	exploreChan := make(chan Coordinates, 200)
-	digChan := make(chan models.ExploreResp, 50)
-	goldChan := make(chan []string, 10)
+	exploreChan := make(chan Coordinates, 1000)
+	digChan := make(chan models.ExploreResp, 200)
+	goldChan := make(chan []string, 100)
 
 	for w := 1; w <= 200; w++ {
 		go explore(mineClient, exploreChan, digChan)
 	}
-	for w := 1; w <= 50; w++ {
+	for w := 1; w <= 100; w++ {
 		go dig(mineClient, digChan, licenseChan, goldChan)
 	}
-	for w := 1; w <= 10; w++ {
+	for w := 1; w <= 20; w++ {
 		go cash(mineClient, goldChan)
 	}
 	go reportMetrics(mineClient)

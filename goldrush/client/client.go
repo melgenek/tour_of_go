@@ -41,10 +41,20 @@ func instrumentTransport(next http.RoundTripper, registry *prometheus.Registry) 
 		},
 		[]string{"code", "method", "path"},
 	)
+	inFlight := prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "in_flight_total",
+		},
+	)
+
 	registry.MustRegister(duration)
+	registry.MustRegister(inFlight)
 
 	return func(r *http.Request) (*http.Response, error) {
+		inFlight.Inc()
+		defer inFlight.Dec()
 		start := time.Now()
+
 		resp, err := next.RoundTrip(r)
 
 		labels := prometheus.Labels{}
@@ -56,6 +66,7 @@ func instrumentTransport(next http.RoundTripper, registry *prometheus.Registry) 
 			labels["code"] = strconv.Itoa(555)
 		}
 		duration.With(labels).Observe(time.Since(start).Seconds())
+
 		return resp, err
 	}
 }
