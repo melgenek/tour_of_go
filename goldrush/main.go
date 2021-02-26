@@ -26,7 +26,7 @@ func main() {
 	}
 	mineClient := client.NewMineClient(address)
 
-	exploreChan := make(chan Coordinates)
+	exploreChan := make(chan Coordinates, 1000)
 	digChan := make(chan models.ExploreResp, 1000)
 	goldChan := make(chan string, 1000)
 	cashChan := make(chan int, 5000)
@@ -70,6 +70,11 @@ func main() {
 		}
 	}
 }
+
+//func allInOne(mineClient *client.MineClient, exploreChan chan Coordinates,
+//	digChan chan models.ExploreResp, goldChan chan string, cashChan chan int) {
+//
+//}
 
 func issueLicense(mineClient *client.MineClient, cashChan chan int, isRemote bool) func(callback func(int)) {
 	licenseIdChannel := make(chan int, 50)
