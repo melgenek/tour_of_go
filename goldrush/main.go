@@ -35,7 +35,7 @@ func main() {
 	for w := 1; w <= 200; w++ {
 		go explore(mineClient, exploreChan, digChan)
 	}
-	for w := 1; w <= 100; w++ {
+	for w := 1; w <= 300; w++ {
 		go dig(mineClient, digChan, getLicenseLease, goldChan)
 	}
 	for w := 1; w <= 20; w++ {
@@ -58,7 +58,7 @@ func main() {
 		for j := 0; j < 3500; j++ {
 			exploreChan <- Coordinates{posX: i, posY: j}
 			processed := 3500*i + j
-			if processed%10000 == 0 {
+			if processed%20000 == 0 {
 				fmt.Printf("Processed %d\n", processed)
 			}
 		}
@@ -171,9 +171,9 @@ func explore(mineClient *client.MineClient, exploreChan chan Coordinates, digCha
 func reportMetrics(mineClient *client.MineClient, isRemote bool) {
 	for {
 		if isRemote {
-			time.Sleep(5*time.Minute - 10*time.Second)
+			time.Sleep(5*time.Minute - 5*time.Second)
 		} else {
-			time.Sleep(1*time.Minute - 10*time.Second)
+			time.Sleep(1*time.Minute - 5*time.Second)
 		}
 
 		fmt.Println("----------")

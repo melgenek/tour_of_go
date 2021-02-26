@@ -23,7 +23,7 @@ Just pass to the client the following environment variable: `ADDRESS=localhost`.
 You can specify [server configuration environment variable](#configuring-the-stub-server-with-environment-variables) values in shell's command line like in the example below:
 ```
 DEFAULT_RATE_LIMIT="300 per second" SERVER_RUN_TIME_IN_SECONDS=120 python3 -m swagger_server
-SERVER_RUN_TIME_IN_SECONDS=60 python3 -m swagger_server
+SERVER_SEED=42 SERVER_RUN_TIME_IN_SECONDS=60 python3 -m swagger_server
 ```
 
 To launch the integration tests, use tox:
