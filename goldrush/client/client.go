@@ -92,8 +92,8 @@ func (client *MineClient) url(path string) string {
 	return fmt.Sprintf("http://%s:8000/%s", client.host, path)
 }
 
-func (client *MineClient) Explore(posX int, posY int) (models.ExploreResp, error) {
-	req, _ := json.Marshal(models.Area{PosX: posX, PosY: posY, SizeX: 1, SizeY: 1})
+func (client *MineClient) Explore(area *models.Area) (models.ExploreResp, error) {
+	req, _ := json.Marshal(area)
 	exploreRes := models.ExploreResp{}
 	err := client.safePost("explore", req, successfulResponse, func(res *http.Response) error {
 		return json.NewDecoder(res.Body).Decode(&exploreRes)

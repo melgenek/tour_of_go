@@ -26,6 +26,7 @@ func main() {
 	}
 	mineClient := client.NewMineClient(address)
 
+	areaChan := make(chan models.Area)
 	exploreChan := make(chan Coordinates, 1000)
 	digChan := make(chan models.ExploreResp, 1000)
 	goldChan := make(chan string, 1000)
@@ -34,10 +35,14 @@ func main() {
 	getLicenseLease := issueLicense(mineClient, cashChan, isRemote)
 
 	cpus := runtime.NumCPU()
+	areaExplorers := cpus
 	explorers := cpus * 2
 	diggers := cpus * 2
 	cashiers := 1
 
+	for w := 1; w <= areaExplorers; w++ {
+		go exploreArea(mineClient, areaChan, exploreChan)
+	}
 	for w := 1; w <= explorers; w++ {
 		go explore(mineClient, exploreChan, digChan)
 	}
@@ -47,11 +52,14 @@ func main() {
 	for w := 1; w <= cashiers; w++ {
 		go cash(mineClient, goldChan, cashChan)
 	}
-	go reportMetrics(mineClient, isRemote)
 
+	go reportMetrics(mineClient, isRemote)
+	go reportUsage()
+
+	processed := 0
 	go func() {
 		for {
-			fmt.Printf("Explore: %d. Dig: %d. Gold: %d. Cash %d\n", len(exploreChan), len(digChan), len(goldChan), len(cashChan))
+			fmt.Printf("Processed: %d. Area exaplore: %d. Explore: %d. Dig: %d. Gold: %d. Cash %d\n", processed, len(areaChan), len(exploreChan), len(digChan), len(goldChan), len(cashChan))
 			if isRemote {
 				time.Sleep(5 * time.Minute)
 			} else {
@@ -60,21 +68,14 @@ func main() {
 		}
 	}()
 
-	for i := 0; i < 3500; i++ {
-		for j := 0; j < 3500; j++ {
-			exploreChan <- Coordinates{posX: i, posY: j}
-			processed := 3500*i + j
-			if processed%20000 == 0 {
-				fmt.Printf("Processed %d\n", processed)
-			}
+	step := 5
+	for i := 0; i < 3500; i += step {
+		for j := 0; j < 3500; j += step {
+			areaChan <- models.Area{PosX: i, PosY: j, SizeX: step, SizeY: step}
+			processed = 3500*i + j
 		}
 	}
 }
-
-//func allInOne(mineClient *client.MineClient, exploreChan chan Coordinates,
-//	digChan chan models.ExploreResp, goldChan chan string, cashChan chan int) {
-//
-//}
 
 func issueLicense(mineClient *client.MineClient, cashChan chan int, isRemote bool) func(callback func(int)) {
 	licenseIdChannel := make(chan int, 50)
@@ -122,7 +123,7 @@ func issueLicense(mineClient *client.MineClient, cashChan chan int, isRemote boo
 
 	go func() {
 		for {
-			fmt.Printf("Liceses: %d\n", len(licenseIdChannel))
+			fmt.Printf("Licenses: %d\n", len(licenseIdChannel))
 			if isRemote {
 				time.Sleep(5 * time.Minute)
 			} else {
@@ -176,10 +177,28 @@ func dig(mineClient *client.MineClient, digChan chan models.ExploreResp, useLice
 	}
 }
 
+func exploreArea(mineClient *client.MineClient, areaChan chan models.Area, exploreChan chan Coordinates) {
+	for area := range areaChan {
+		for {
+			exploreRes, exploreErr := mineClient.Explore(&area)
+			if exploreErr == nil {
+				if exploreRes.Amount > 0 {
+					for i := exploreRes.Area.PosX; i < exploreRes.Area.PosX+exploreRes.Area.SizeX; i++ {
+						for j := exploreRes.Area.PosY; j < exploreRes.Area.PosY+exploreRes.Area.SizeY; j++ {
+							exploreChan <- Coordinates{posX: i, posY: j}
+						}
+					}
+				}
+				break
+			}
+		}
+	}
+}
+
 func explore(mineClient *client.MineClient, exploreChan chan Coordinates, digChan chan models.ExploreResp) {
 	for coords := range exploreChan {
 		for {
-			exploreRes, exploreErr := mineClient.Explore(coords.posX, coords.posY)
+			exploreRes, exploreErr := mineClient.Explore(&models.Area{PosX: coords.posX, PosY: coords.posY, SizeX: 1, SizeY: 1})
 			if exploreErr == nil {
 				if exploreRes.Amount > 0 {
 					digChan <- exploreRes
@@ -190,19 +209,21 @@ func explore(mineClient *client.MineClient, exploreChan chan Coordinates, digCha
 	}
 }
 
-func reportMetrics(mineClient *client.MineClient, isRemote bool) {
+func reportUsage() {
 	for {
-		//if isRemote {
-		//	time.Sleep(5*time.Minute - 5*time.Second)
-		//} else {
-		//	time.Sleep(1*time.Minute - 5*time.Second)
-		//}
-
 		fmt.Println("----------")
 		utils.PrintMemoryUsage()
 		utils.PrintCpuUsage()
-		//mineClient.PrintMetrics()
 		fmt.Println("----------")
-		time.Sleep(30 * time.Second)
+		time.Sleep(60 * time.Second)
 	}
+}
+
+func reportMetrics(mineClient *client.MineClient, isRemote bool) {
+	if isRemote {
+		time.Sleep(15*time.Minute - 20*time.Second)
+	} else {
+		time.Sleep(2*time.Minute - 5*time.Second)
+	}
+	mineClient.PrintMetrics()
 }
