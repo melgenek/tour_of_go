@@ -12,6 +12,14 @@ type License struct {
 	DigUsed    int `json:"digUsed"`
 }
 
+func (license *License) IsUsed() bool {
+	return license.DigAllowed == license.DigUsed
+}
+
+func (license *License) UseOnce() {
+	license.DigUsed++
+}
+
 type Licenses struct {
 	licenses map[int]License
 	mu       sync.Mutex

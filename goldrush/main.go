@@ -8,45 +8,19 @@ import (
 	"goldrush/utils"
 	"os"
 	"runtime"
+	"sort"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
-type Coordinates struct {
-	posX int
-	posY int
-}
-
-type AreaStats struct {
-	mu      sync.Mutex
-	avg     float32
-	p90     float64
-	entries []float64
-	n       int
-	total   int
-}
-
-func (areaStats *AreaStats) observe(amount int) {
-	areaStats.mu.Lock()
-	defer areaStats.mu.Unlock()
-	areaStats.n++
-	areaStats.total += amount
-	areaStats.entries = append(areaStats.entries, float64(amount))
-	areaStats.avg = float32(areaStats.total) / float32(areaStats.n)
-	p90, _ := stats.Percentile(areaStats.entries, 90)
-	areaStats.p90 = p90
-}
-
-func (areaStats *AreaStats) String() string {
-	return fmt.Sprintf("{P90 = %f, Avg = %f}", areaStats.p90, areaStats.avg)
-}
+var totalCash uint64 = 0
 
 const maxLicenses = 10
 
-type useLicense func(callback func(int))
-
 func main() {
 	cpus := runtime.NumCPU()
+	start := time.Now()
 	fmt.Println("Cpus: ", cpus)
 
 	address, isRemote := os.LookupEnv("ADDRESS")
@@ -55,40 +29,14 @@ func main() {
 	}
 	mineClient := client.NewMineClient(address)
 
-	areaExplorers := cpus
-	explorers := cpus * 2
-	diggers := cpus * 2
-	cashiers := 1
-
-	areaChan := make(chan models.Area, areaExplorers)
-	exploreChan := make(chan Coordinates, explorers)
-	digChan := make(chan models.ExploreResp, diggers)
-	goldChan := make(chan string, cashiers)
-	cashChan := make(chan int, 5000)
-
-	getLicenseLease := issueLicense(mineClient, cashChan, isRemote)
-
-	areaStats := AreaStats{}
-	for w := 1; w <= areaExplorers; w++ {
-		go exploreArea(mineClient, areaChan, exploreChan, &areaStats)
-	}
-	for w := 1; w <= explorers; w++ {
-		go explore(mineClient, exploreChan, digChan)
-	}
-	for w := 1; w <= diggers; w++ {
-		go dig(mineClient, digChan, getLicenseLease, goldChan)
-	}
-	for w := 1; w <= cashiers; w++ {
-		go cash(mineClient, goldChan, cashChan)
-	}
-
 	go reportMetrics(mineClient, isRemote)
 	go reportUsage()
 
-	processed := 0
+	diggers := maxLicenses
+	cashChan := make(chan int, diggers*10)
 	go func() {
 		for {
-			fmt.Printf("Processed: %d. Area explore: %d. Explore: %d. Dig: %d. Gold: %d. Cash %d. Area stats: %v\n", processed, len(areaChan), len(exploreChan), len(digChan), len(goldChan), len(cashChan), &areaStats)
+			fmt.Printf("Minutes: %.1f. Cash %d. Cash queue %d.\n", time.Since(start).Minutes(), totalCash, len(cashChan))
 			if isRemote {
 				time.Sleep(5 * time.Minute)
 			} else {
@@ -97,146 +45,116 @@ func main() {
 		}
 	}()
 
-	step := 5
-	for i := 0; i < 3500; i += step {
-		for j := 0; j < 3500; j += step {
-			areaChan <- models.Area{PosX: i, PosY: j, SizeX: step, SizeY: step}
-			processed = 3500*i + j
-		}
-	}
-}
+	const width = 3500
+	const step = 25
+	const areasN = width * width / step / step
+	var areas [areasN]models.ExploreResp
 
-func issueLicense(mineClient *client.MineClient, cashChan chan int, isRemote bool) func(callback func(int)) {
-	licenseIdChannel := make(chan int, 50)
-	licenseIdAckChannel := make(chan int, 50)
-	licenses := make(map[int]*models.License)
-
-	go func() {
-		for {
-			select {
-			case licenseId := <-licenseIdAckChannel:
-				licenses[licenseId].DigUsed++
-				if licenses[licenseId].DigAllowed == licenses[licenseId].DigUsed {
-					delete(licenses, licenseId)
-				}
-			default:
-				if len(licenses) < maxLicenses {
-					var cashList []int
-					select {
-					case cash := <-cashChan:
-						cashList = []int{cash}
-					default:
-						cashList = []int{}
-					}
-
-					for {
-						license, licenseErr := mineClient.IssueLicense(cashList)
-						if licenseErr == nil {
-							if licenses[license.Id] == nil {
-								licenses[license.Id] = &license
-							} else {
-								licenses[license.Id].DigAllowed += license.DigAllowed
-							}
-							for i := 0; i < license.DigAllowed; i++ {
-								licenseIdChannel <- license.Id
-							}
-							break
-						}
-					}
-				} else {
-					time.Sleep(10 * time.Millisecond)
-				}
-			}
-		}
-	}()
-
-	go func() {
-		for {
-			fmt.Printf("Licenses: %d\n", len(licenseIdChannel))
-			if isRemote {
-				time.Sleep(5 * time.Minute)
-			} else {
-				time.Sleep(10 * time.Second)
-			}
-		}
-	}()
-
-	return func(callback func(int)) {
-		licenseId := <-licenseIdChannel
-		callback(licenseId)
-		licenseIdAckChannel <- licenseId
-	}
-}
-
-func cash(mineClient *client.MineClient, goldChan chan string, cashChan chan int) {
-	for gold := range goldChan {
-		for {
-			cash, cashErr := mineClient.Cash(gold)
-			if cashErr == nil {
-				for i := 0; i < len(cash); i++ {
-					select {
-					case cashChan <- cash[i]:
-					default:
-					}
-				}
-				break
-			}
-		}
-	}
-}
-
-func dig(mineClient *client.MineClient, digChan chan models.ExploreResp, useLicense useLicense, goldChan chan string) {
-	for exploreRes := range digChan {
-		left := exploreRes.Amount
-		for k := 1; k <= 10 && left > 0; {
-			useLicense(func(licenseId int) {
+	var wg sync.WaitGroup
+	var areaExplorers = cpus
+	for w := 0; w < areaExplorers; w++ {
+		wg.Add(1)
+		go func(currentId int) {
+			for i := currentId; i < areasN; i += areaExplorers {
+				x := ((i * step) / width) * step
+				y := (i * step) % width
 				for {
-					digResult, digErr := mineClient.Dig(exploreRes.Area.PosX, exploreRes.Area.PosY, k, licenseId)
-					if digErr == nil {
-						for i := 0; i < len(digResult); i++ {
-							goldChan <- digResult[i]
-						}
-						k++
-						left -= len(digResult)
+					exploreRes, exploreErr := mineClient.Explore(&models.Area{PosX: x, PosY: y, SizeX: step, SizeY: step})
+					if exploreErr == nil {
+						areas[i] = exploreRes
 						break
 					}
 				}
-			})
-		}
+			}
+			wg.Done()
+		}(w)
 	}
+	wg.Wait()
+	sort.SliceStable(areas[:], func(i, j int) bool {
+		return areas[i].Amount > areas[j].Amount
+	})
+
+	var amounts [areasN]float64
+	for i, value := range areas {
+		amounts[i] = float64(value.Amount)
+	}
+	max, _ := stats.Max(amounts[:])
+	min, _ := stats.Min(amounts[:])
+	mean, _ := stats.Mean(amounts[:])
+	fmt.Printf("Max = %0.2f. Min = %0.2f. Avg = %0.2f\n", max, min, mean)
+
+	for w := 0; w < diggers; w++ {
+		go explore2(mineClient, w, diggers, areas[:], cashChan)
+	}
+
+	select {}
 }
 
-func exploreArea(mineClient *client.MineClient, areaChan chan models.Area, exploreChan chan Coordinates, areaStats *AreaStats) {
-	for area := range areaChan {
-		for {
-			exploreRes, exploreErr := mineClient.Explore(&area)
-			if exploreErr == nil {
-				if exploreRes.Amount > 0 {
-					if areaStats.p90 <= float64(exploreRes.Amount) {
-						for i := exploreRes.Area.PosX; i < exploreRes.Area.PosX+exploreRes.Area.SizeX; i++ {
-							for j := exploreRes.Area.PosY; j < exploreRes.Area.PosY+exploreRes.Area.SizeY; j++ {
-								exploreChan <- Coordinates{posX: i, posY: j}
+func explore2(mineClient *client.MineClient, id int, total int, explores []models.ExploreResp, cashChan chan int) {
+	var license *models.License
+	for idx := id; idx < len(explores); idx += total {
+		area := explores[idx]
+		totalLeft := area.Amount
+		for i := area.Area.PosX; i < area.Area.PosX+area.Area.SizeX; i++ {
+			for j := area.Area.PosY; j < area.Area.PosY+area.Area.SizeY; j++ {
+				for {
+					exploreRes, exploreErr := mineClient.Explore(&models.Area{PosX: i, PosY: j, SizeX: 1, SizeY: 1})
+					if exploreErr == nil {
+						left := exploreRes.Amount
+						totalLeft -= left
+						for k := 1; k <= 10 && left > 0; {
+							if license == nil || license.IsUsed() {
+								license = issueNewLicense(mineClient, cashChan)
+							}
+							for {
+								digResults, digErr := mineClient.Dig(exploreRes.Area.PosX, exploreRes.Area.PosY, k, license.Id)
+								if digErr == nil {
+									for _, gold := range digResults {
+										cash(mineClient, gold, cashChan)
+									}
+									k++
+									left -= len(digResults)
+									license.UseOnce()
+									break
+								}
 							}
 						}
+						break
 					}
-					areaStats.observe(exploreRes.Amount)
 				}
-				break
 			}
 		}
 	}
 }
 
-func explore(mineClient *client.MineClient, exploreChan chan Coordinates, digChan chan models.ExploreResp) {
-	for coords := range exploreChan {
-		for {
-			exploreRes, exploreErr := mineClient.Explore(&models.Area{PosX: coords.posX, PosY: coords.posY, SizeX: 1, SizeY: 1})
-			if exploreErr == nil {
-				if exploreRes.Amount > 0 {
-					digChan <- exploreRes
+func issueNewLicense(mineClient *client.MineClient, cashChan chan int) *models.License {
+	for {
+		var cashList []int
+		select {
+		case cash := <-cashChan:
+			cashList = []int{cash}
+		default:
+			cashList = []int{}
+		}
+		license, licenseErr := mineClient.IssueLicense(cashList)
+		if licenseErr == nil {
+			return &license
+		}
+	}
+}
+
+func cash(mineClient *client.MineClient, gold string, cashChan chan int) {
+	for {
+		cash, cashErr := mineClient.Cash(gold)
+		if cashErr == nil {
+			atomic.AddUint64(&totalCash, uint64(len(cash)))
+			for i := 0; i < len(cash); i++ {
+				select {
+				case cashChan <- cash[i]:
+				default:
 				}
-				break
 			}
+			break
 		}
 	}
 }

@@ -1,0 +1,121 @@
+precalculate amounts
+
+Final balance: 67130
+
+*** CLIENT REPORT ***
+Balance:        67130
+Licenses active:        9
+Free licenses issued:   2
+Paid licenses issued:   1929
+Single cell explores done:      26664
+Single cell explores with treasures found:      1716
+Single cell explore treasure found rate:        0.06436
+Digs done:      9626
+Dig success rate:       0.18346
+Treasures found:        1766
+Total found treasure value:     69078
+Treasures exchanged:    1765
+Total exchanged treasure value: 69059
+Treasure exchange efficiency:   0.99943
+Treasures not exchanged:        1127.0.0.1 - - [27/Feb/2021 16:30:50] "POST /dig HTTP/1.1" 404 -
+
+
+*** WORLD REPORT ***
+Configuration:  3500 x 3500 x 10
+Total treasures:        476006
+Total treasure value:   18623533
+Avg treasure value:     39.12
+Treasure density:       0.00389
+Treasure value density: 0.15203
+* LAYER STATS *
+Layer#  Tot.treas       Tot.treas.val   Avg.treas.val   Treas.dens      Treas.val.dens
+     1      45293              320657            7.08      0.00370             0.02618
+     2      46679              660125           14.14      0.00381             0.05389
+     3      47398             1000770           21.11      0.00387             0.08170
+     4      48203             1356677           28.15      0.00393             0.11075
+     5      47863             1691779           35.35      0.00391             0.13810
+     6      48072             2043288           42.50      0.00392             0.16680
+     7      48264             2383726           49.39      0.00394             0.19459
+     8      47990             2722251           56.73      0.00392             0.22222
+     9      48097             3050367           63.42      0.00393             0.24901
+    10      48147             3393893           70.49      0.00393             0.27705
+Final balance: 67130
+
+
+Cpus:  8
+Minutes: 0.0. Cash 0. Cash queue 0.
+Minutes: 0.2. Cash 0. Cash queue 0.
+Minutes: 0.3. Cash 0. Cash queue 0.
+Minutes: 0.5. Cash 0. Cash queue 0.
+Minutes: 0.7. Cash 0. Cash queue 0.
+Max = 46.00. Min = 8.00. Avg = 24.38
+----------
+Total = 15680MiB, Free = 742MiB, UsedPercent = 68.796301
+TotalAlloc = 899 MiB    Alloc = 1 MiB   Sys = 71 MiB
+Cpu: 22.222222. Process: 60.525190
+----------
+Minutes: 0.8. Cash 9087. Cash queue 99.
+Minutes: 1.0. Cash 18044. Cash queue 97.
+Minutes: 1.2. Cash 27435. Cash queue 96.
+Minutes: 1.3. Cash 36792. Cash queue 100.
+Minutes: 1.5. Cash 47201. Cash queue 100.
+Minutes: 1.7. Cash 56168. Cash queue 100.
+----------
+Total = 15680MiB, Free = 222MiB, UsedPercent = 71.489418
+TotalAlloc = 1440 MiB   Alloc = 91 MiB  Sys = 274 MiB
+Cpu: 26.582278. Process: 46.113545
+----------
+Minutes: 1.8. Cash 64764. Cash queue 100.
+Minutes: 2.0. Cash 73340. Cash queue 99.
+Minutes: 2.2. Cash 74204. Cash queue 100.
+Minutes: 2.3. Cash 74204. Cash queue 100.
+Minutes: 2.5. Cash 74204. Cash queue 100.
+# TYPE in_flight_total gauge
+in_flight_total 10
+# TYPE request_duration_histogram_seconds histogram
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/cash",le="0.1"} 1891
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/cash",le="1"} 1891
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/cash",le="+Inf"} 1891
+request_duration_histogram_seconds_sum{code="200",method="post",path="/cash"} 33.706365027
+request_duration_histogram_seconds_count{code="200",method="post",path="/cash"} 1891
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/dig",le="0.1"} 1892
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/dig",le="1"} 1892
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/dig",le="+Inf"} 1892
+request_duration_histogram_seconds_sum{code="200",method="post",path="/dig"} 34.68566146599994
+request_duration_histogram_seconds_count{code="200",method="post",path="/dig"} 1892
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/explore",le="0.1"} 48265
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/explore",le="1"} 48265
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/explore",le="+Inf"} 48265
+request_duration_histogram_seconds_sum{code="200",method="post",path="/explore"} 815.6311156959932
+request_duration_histogram_seconds_count{code="200",method="post",path="/explore"} 48265
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/licenses",le="0.1"} 2070
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/licenses",le="1"} 2070
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/licenses",le="+Inf"} 2070
+request_duration_histogram_seconds_sum{code="200",method="post",path="/licenses"} 37.358883124000045
+request_duration_histogram_seconds_count{code="200",method="post",path="/licenses"} 2070
+request_duration_histogram_seconds_bucket{code="404",method="post",path="/dig",le="0.1"} 8434
+request_duration_histogram_seconds_bucket{code="404",method="post",path="/dig",le="1"} 8434
+request_duration_histogram_seconds_bucket{code="404",method="post",path="/dig",le="+Inf"} 8434
+request_duration_histogram_seconds_sum{code="404",method="post",path="/dig"} 152.43549919899982
+request_duration_histogram_seconds_count{code="404",method="post",path="/dig"} 8434
+request_duration_histogram_seconds_bucket{code="502",method="post",path="/licenses",le="0.1"} 1
+request_duration_histogram_seconds_bucket{code="502",method="post",path="/licenses",le="1"} 1
+request_duration_histogram_seconds_bucket{code="502",method="post",path="/licenses",le="+Inf"} 1
+request_duration_histogram_seconds_sum{code="502",method="post",path="/licenses"} 0.017455554
+request_duration_histogram_seconds_count{code="502",method="post",path="/licenses"} 1
+request_duration_histogram_seconds_bucket{code="503",method="post",path="/cash",le="0.1"} 278
+request_duration_histogram_seconds_bucket{code="503",method="post",path="/cash",le="1"} 278
+request_duration_histogram_seconds_bucket{code="503",method="post",path="/cash",le="+Inf"} 278
+request_duration_histogram_seconds_sum{code="503",method="post",path="/cash"} 4.997694372000001
+request_duration_histogram_seconds_count{code="503",method="post",path="/cash"} 278
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/cash",le="0.1"} 175
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/cash",le="1"} 175
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/cash",le="+Inf"} 208
+request_duration_histogram_seconds_sum{code="555",method="post",path="/cash"} 34.30225432500001
+request_duration_histogram_seconds_count{code="555",method="post",path="/cash"} 208
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/explore",le="0.1"} 109508
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/explore",le="1"} 109508
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/explore",le="+Inf"} 109805
+request_duration_histogram_seconds_sum{code="555",method="post",path="/explore"} 330.2887511650009
+request_duration_histogram_seconds_count{code="555",method="post",path="/explore"} 109805
+
