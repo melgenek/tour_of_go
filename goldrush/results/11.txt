@@ -1,0 +1,116 @@
+filter 5x5 with less than average
+
+Final balance: 106739
+
+*** CLIENT REPORT ***
+Balance:        106739
+Licenses active:        1
+Free licenses issued:   6
+Paid licenses issued:   3159
+Single cell explores done:      25314
+Single cell explores with treasures found:      2926
+Single cell explore treasure found rate:        0.11559
+Digs done:      15808
+Dig success rate:       0.18415
+Treasures found:        2911
+Total found treasure value:     113588
+Treasures exchanged:    2812
+Total exchanged treasure value: 109898
+Treasure exchange efficiency:   0.96599
+Treasures not exchanged:        991
+
+Cpus:  8
+Licenses: 0
+Processed: 0. Area exaplore: 0. Explore: 0. Dig: 0. Gold: 0. Cash 0. Stats: &{{0 0} 0 0 0}
+----------
+Total = 15680MiB, Free = 1123MiB, UsedPercent = 68.208396
+TotalAlloc = 0 MiB      Alloc = 0 MiB   Sys = 69 MiB
+Cpu: 34.146341. Process: 26.469188
+----------
+Licenses: 0
+Processed: 17560. Area exaplore: 0. Explore: 100. Dig: 58. Gold: 15. Cash 3127. Stats: &{{0 0} 2.4712644 87 215}
+Licenses: 0
+Processed: 37120. Area exaplore: 0. Explore: 100. Dig: 100. Gold: 29. Cash 4999. Stats: &{{0 0} 2.6684783 184 491}
+Licenses: 0
+Processed: 55805. Area exaplore: 0. Explore: 100. Dig: 100. Gold: 47. Cash 5000. Stats: &{{0 0} 2.844697 264 751}
+Licenses: 0
+Processed: 89370. Area exaplore: 0. Explore: 100. Dig: 100. Gold: 65. Cash 4999. Stats: &{{0 0} 2.948424 349 1029}
+Licenses: 0
+Processed: 123860. Area exaplore: 0. Explore: 100. Dig: 100. Gold: 72. Cash 5000. Stats: &{{0 0} 2.9431818 440 1295}
+Licenses: 0
+Processed: 157635. Area exaplore: 0. Explore: 100. Dig: 100. Gold: 90. Cash 4999. Stats: &{{0 0} 2.9848485 528 1576}
+----------
+Total = 15680MiB, Free = 853MiB, UsedPercent = 69.858934
+TotalAlloc = 493 MiB    Alloc = 114 MiB Sys = 208 MiB
+Cpu: 26.582278. Process: 31.878732
+----------
+Processed: 177555. Area exaplore: 0. Explore: 99. Dig: 100. Gold: 100. Cash 5000. Stats: &{{0 0} 3 604 1812}
+Licenses: 0
+Licenses: 0
+Processed: 212390. Area exaplore: 0. Explore: 100. Dig: 100. Gold: 99. Cash 5000. Stats: &{{0 0} 3 691 2073}
+Licenses: 0
+Processed: 247510. Area exaplore: 0. Explore: 100. Dig: 100. Gold: 100. Cash 4999. Stats: &{{0 0} 3.0012755 784 2353}
+Licenses: 0
+Processed: 282005. Area exaplore: 0. Explore: 100. Dig: 100. Gold: 100. Cash 4999. Stats: &{{0 0} 3 872 2616}
+Licenses: 9
+Processed: 315920. Area exaplore: 0. Explore: 100. Dig: 100. Gold: 100. Cash 5000. Stats: &{{0 0} 3.0010617 942 2827}
+# TYPE in_flight_total gauge
+in_flight_total 18
+# TYPE request_duration_histogram_seconds histogram
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/cash",le="0.1"} 2688
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/cash",le="1"} 2688
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/cash",le="+Inf"} 2688
+request_duration_histogram_seconds_sum{code="200",method="post",path="/cash"} 96.034625084
+request_duration_histogram_seconds_count{code="200",method="post",path="/cash"} 2688
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/dig",le="0.1"} 2796
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/dig",le="1"} 2796
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/dig",le="+Inf"} 2796
+request_duration_histogram_seconds_sum{code="200",method="post",path="/dig"} 102.34433947799977
+request_duration_histogram_seconds_count{code="200",method="post",path="/dig"} 2796
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/explore",le="0.1"} 37576
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/explore",le="1"} 37581
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/explore",le="+Inf"} 37589
+request_duration_histogram_seconds_sum{code="200",method="post",path="/explore"} 1423.2602646380035
+request_duration_histogram_seconds_count{code="200",method="post",path="/explore"} 37589
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/licenses",le="0.1"} 3026
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/licenses",le="1"} 3026
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/licenses",le="+Inf"} 3027
+request_duration_histogram_seconds_sum{code="200",method="post",path="/licenses"} 109.82058189100017
+request_duration_histogram_seconds_count{code="200",method="post",path="/licenses"} 3027
+request_duration_histogram_seconds_bucket{code="404",method="post",path="/dig",le="0.1"} 12322
+request_duration_histogram_seconds_bucket{code="404",method="post",path="/dig",le="1"} 12322
+request_duration_histogram_seconds_bucket{code="404",method="post",path="/dig",le="+Inf"} 12322
+request_duration_histogram_seconds_sum{code="404",method="post",path="/dig"} 449.62556061199956
+request_duration_histogram_seconds_count{code="404",method="post",path="/dig"} 12322
+request_duration_histogram_seconds_bucket{code="502",method="post",path="/licenses",le="0.1"} 3
+request_duration_histogram_seconds_bucket{code="502",method="post",path="/licenses",le="1"} 3
+request_duration_histogram_seconds_bucket{code="502",method="post",path="/licenses",le="+Inf"} 3
+request_duration_histogram_seconds_sum{code="502",method="post",path="/licenses"} 0.10609523900000001
+request_duration_histogram_seconds_count{code="502",method="post",path="/licenses"} 3
+request_duration_histogram_seconds_bucket{code="503",method="post",path="/cash",le="0.1"} 384
+request_duration_histogram_seconds_bucket{code="503",method="post",path="/cash",le="1"} 384
+request_duration_histogram_seconds_bucket{code="503",method="post",path="/cash",le="+Inf"} 384
+request_duration_histogram_seconds_sum{code="503",method="post",path="/cash"} 13.87245638399999
+request_duration_histogram_seconds_count{code="503",method="post",path="/cash"} 384
+request_duration_histogram_seconds_bucket{code="504",method="post",path="/licenses",le="0.1"} 1
+request_duration_histogram_seconds_bucket{code="504",method="post",path="/licenses",le="1"} 1
+request_duration_histogram_seconds_bucket{code="504",method="post",path="/licenses",le="+Inf"} 1
+request_duration_histogram_seconds_sum{code="504",method="post",path="/licenses"} 0.032827142
+request_duration_histogram_seconds_count{code="504",method="post",path="/licenses"} 1
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/explore",le="0.1"} 249
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/explore",le="1"} 249
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/explore",le="+Inf"} 265
+request_duration_histogram_seconds_sum{code="555",method="post",path="/explore"} 16.349164812
+request_duration_histogram_seconds_count{code="555",method="post",path="/explore"} 265
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/licenses",le="0.1"} 80
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/licenses",le="1"} 80
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/licenses",le="+Inf"} 82
+request_duration_histogram_seconds_sum{code="555",method="post",path="/licenses"} 2.043787041999999
+request_duration_histogram_seconds_count{code="555",method="post",path="/licenses"} 82
+Licenses: 0
+Processed: 335080. Area exaplore: 0. Explore: 100. Dig: 100. Gold: 100. Cash 4999. Stats: &{{0 0} 3.0019724 1014 3044}
+----------
+Total = 15680MiB, Free = 465MiB, UsedPercent = 72.318299
+TotalAlloc = 996 MiB    Alloc = 235 MiB Sys = 411 MiB
+Cpu: 30.487805. Process: 32.581646
+----------

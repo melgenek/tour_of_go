@@ -7,6 +7,7 @@ import (
 	"goldrush/utils"
 	"os"
 	"runtime"
+	"sync"
 	"time"
 )
 
@@ -15,9 +16,26 @@ type Coordinates struct {
 	posY int
 }
 
+type AreaStats struct {
+	mu    sync.Mutex
+	avg   float32
+	n     int
+	total int
+}
+
+func (stats *AreaStats) observe(amount int) {
+	stats.mu.Lock()
+	defer stats.mu.Unlock()
+	stats.n++
+	stats.total += amount
+	stats.avg = float32(stats.total) / float32(stats.n)
+}
+
 const maxLicenses = 10
 
 type useLicense func(callback func(int))
+
+const queueSize = 100
 
 func main() {
 	address, isRemote := os.LookupEnv("ADDRESS")
@@ -27,21 +45,23 @@ func main() {
 	mineClient := client.NewMineClient(address)
 
 	areaChan := make(chan models.Area)
-	exploreChan := make(chan Coordinates, 1000)
-	digChan := make(chan models.ExploreResp, 1000)
-	goldChan := make(chan string, 1000)
+	exploreChan := make(chan Coordinates, queueSize)
+	digChan := make(chan models.ExploreResp, queueSize)
+	goldChan := make(chan string, queueSize)
 	cashChan := make(chan int, 5000)
 
 	getLicenseLease := issueLicense(mineClient, cashChan, isRemote)
 
 	cpus := runtime.NumCPU()
+	fmt.Println("Cpus: ", cpus)
 	areaExplorers := cpus
 	explorers := cpus * 2
 	diggers := cpus * 2
 	cashiers := 1
 
+	stats := AreaStats{}
 	for w := 1; w <= areaExplorers; w++ {
-		go exploreArea(mineClient, areaChan, exploreChan)
+		go exploreArea(mineClient, areaChan, exploreChan, &stats)
 	}
 	for w := 1; w <= explorers; w++ {
 		go explore(mineClient, exploreChan, digChan)
@@ -59,7 +79,7 @@ func main() {
 	processed := 0
 	go func() {
 		for {
-			fmt.Printf("Processed: %d. Area exaplore: %d. Explore: %d. Dig: %d. Gold: %d. Cash %d\n", processed, len(areaChan), len(exploreChan), len(digChan), len(goldChan), len(cashChan))
+			fmt.Printf("Processed: %d. Area explore: %d. Explore: %d. Dig: %d. Gold: %d. Cash %d. Stats: %v\n", processed, len(areaChan), len(exploreChan), len(digChan), len(goldChan), len(cashChan), &stats)
 			if isRemote {
 				time.Sleep(5 * time.Minute)
 			} else {
@@ -177,15 +197,18 @@ func dig(mineClient *client.MineClient, digChan chan models.ExploreResp, useLice
 	}
 }
 
-func exploreArea(mineClient *client.MineClient, areaChan chan models.Area, exploreChan chan Coordinates) {
+func exploreArea(mineClient *client.MineClient, areaChan chan models.Area, exploreChan chan Coordinates, stats *AreaStats) {
 	for area := range areaChan {
 		for {
 			exploreRes, exploreErr := mineClient.Explore(&area)
 			if exploreErr == nil {
 				if exploreRes.Amount > 0 {
-					for i := exploreRes.Area.PosX; i < exploreRes.Area.PosX+exploreRes.Area.SizeX; i++ {
-						for j := exploreRes.Area.PosY; j < exploreRes.Area.PosY+exploreRes.Area.SizeY; j++ {
-							exploreChan <- Coordinates{posX: i, posY: j}
+					if stats.avg <= float32(exploreRes.Amount) || len(exploreChan) < queueSize {
+						stats.observe(exploreRes.Amount)
+						for i := exploreRes.Area.PosX; i < exploreRes.Area.PosX+exploreRes.Area.SizeX; i++ {
+							for j := exploreRes.Area.PosY; j < exploreRes.Area.PosY+exploreRes.Area.SizeY; j++ {
+								exploreChan <- Coordinates{posX: i, posY: j}
+							}
 						}
 					}
 				}
