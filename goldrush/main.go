@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/montanaflynn/stats"
 	"goldrush/client"
 	"goldrush/models"
 	"goldrush/utils"
@@ -17,51 +18,59 @@ type Coordinates struct {
 }
 
 type AreaStats struct {
-	mu    sync.Mutex
-	avg   float32
-	n     int
-	total int
+	mu      sync.Mutex
+	avg     float32
+	p90     float64
+	entries []float64
+	n       int
+	total   int
 }
 
-func (stats *AreaStats) observe(amount int) {
-	stats.mu.Lock()
-	defer stats.mu.Unlock()
-	stats.n++
-	stats.total += amount
-	stats.avg = float32(stats.total) / float32(stats.n)
+func (areaStats *AreaStats) observe(amount int) {
+	areaStats.mu.Lock()
+	defer areaStats.mu.Unlock()
+	areaStats.n++
+	areaStats.total += amount
+	areaStats.entries = append(areaStats.entries, float64(amount))
+	areaStats.avg = float32(areaStats.total) / float32(areaStats.n)
+	p90, _ := stats.Percentile(areaStats.entries, 90)
+	areaStats.p90 = p90
+}
+
+func (areaStats *AreaStats) String() string {
+	return fmt.Sprintf("{P90 = %f, Avg = %f}", areaStats.p90, areaStats.avg)
 }
 
 const maxLicenses = 10
 
 type useLicense func(callback func(int))
 
-const queueSize = 100
-
 func main() {
+	cpus := runtime.NumCPU()
+	fmt.Println("Cpus: ", cpus)
+
 	address, isRemote := os.LookupEnv("ADDRESS")
 	if !isRemote {
 		address = "localhost"
 	}
 	mineClient := client.NewMineClient(address)
 
-	areaChan := make(chan models.Area)
-	exploreChan := make(chan Coordinates, queueSize)
-	digChan := make(chan models.ExploreResp, queueSize)
-	goldChan := make(chan string, queueSize)
-	cashChan := make(chan int, 5000)
-
-	getLicenseLease := issueLicense(mineClient, cashChan, isRemote)
-
-	cpus := runtime.NumCPU()
-	fmt.Println("Cpus: ", cpus)
 	areaExplorers := cpus
 	explorers := cpus * 2
 	diggers := cpus * 2
 	cashiers := 1
 
-	stats := AreaStats{}
+	areaChan := make(chan models.Area, areaExplorers)
+	exploreChan := make(chan Coordinates, explorers)
+	digChan := make(chan models.ExploreResp, diggers)
+	goldChan := make(chan string, cashiers)
+	cashChan := make(chan int, 5000)
+
+	getLicenseLease := issueLicense(mineClient, cashChan, isRemote)
+
+	areaStats := AreaStats{}
 	for w := 1; w <= areaExplorers; w++ {
-		go exploreArea(mineClient, areaChan, exploreChan, &stats)
+		go exploreArea(mineClient, areaChan, exploreChan, &areaStats)
 	}
 	for w := 1; w <= explorers; w++ {
 		go explore(mineClient, exploreChan, digChan)
@@ -79,7 +88,7 @@ func main() {
 	processed := 0
 	go func() {
 		for {
-			fmt.Printf("Processed: %d. Area explore: %d. Explore: %d. Dig: %d. Gold: %d. Cash %d. Stats: %v\n", processed, len(areaChan), len(exploreChan), len(digChan), len(goldChan), len(cashChan), &stats)
+			fmt.Printf("Processed: %d. Area explore: %d. Explore: %d. Dig: %d. Gold: %d. Cash %d. Area stats: %v\n", processed, len(areaChan), len(exploreChan), len(digChan), len(goldChan), len(cashChan), &areaStats)
 			if isRemote {
 				time.Sleep(5 * time.Minute)
 			} else {
@@ -197,20 +206,20 @@ func dig(mineClient *client.MineClient, digChan chan models.ExploreResp, useLice
 	}
 }
 
-func exploreArea(mineClient *client.MineClient, areaChan chan models.Area, exploreChan chan Coordinates, stats *AreaStats) {
+func exploreArea(mineClient *client.MineClient, areaChan chan models.Area, exploreChan chan Coordinates, areaStats *AreaStats) {
 	for area := range areaChan {
 		for {
 			exploreRes, exploreErr := mineClient.Explore(&area)
 			if exploreErr == nil {
 				if exploreRes.Amount > 0 {
-					if stats.avg <= float32(exploreRes.Amount) || len(exploreChan) < queueSize {
-						stats.observe(exploreRes.Amount)
+					if areaStats.p90 <= float64(exploreRes.Amount) {
 						for i := exploreRes.Area.PosX; i < exploreRes.Area.PosX+exploreRes.Area.SizeX; i++ {
 							for j := exploreRes.Area.PosY; j < exploreRes.Area.PosY+exploreRes.Area.SizeY; j++ {
 								exploreChan <- Coordinates{posX: i, posY: j}
 							}
 						}
 					}
+					areaStats.observe(exploreRes.Amount)
 				}
 				break
 			}

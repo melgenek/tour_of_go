@@ -1,0 +1,112 @@
+filter 5x5 with less than 90%
+
+Final balance: 109421
+
+*** CLIENT REPORT ***
+Balance:        109421
+Licenses active:        1
+Free licenses issued:   5
+Paid licenses issued:   3147
+Single cell explores done:      23518
+Single cell explores with treasures found:      2852
+Single cell explore treasure found rate:        0.12127
+Digs done:      15745
+Dig success rate:       0.18634
+Treasures found:        2934
+Total found treasure value:     112850
+Treasures exchanged:    2922
+Total exchanged treasure value: 112568
+Treasure exchange efficiency:   0.99591
+Treasures not exchanged:        12
+
+Cpus:  8
+Licenses: 0
+----------
+Total = 15680MiB, Free = 1195MiB, UsedPercent = 67.466583
+TotalAlloc = 0 MiB      Alloc = 0 MiB   Sys = 70 MiB
+Processed: 75. Area explore: 8. Explore: 0. Dig: 0. Gold: 0. Cash 0. Area stats: {P90 = 0.000000, Avg = 0.000000}
+Cpu: 30.379747. Process: 32.392061
+----------
+Licenses: 0
+Processed: 2695. Area explore: 8. Explore: 16. Dig: 16. Gold: 1. Cash 5000. Area stats: {P90 = 2.000000, Avg = 1.547771}
+Licenses: 4
+Processed: 35950. Area explore: 8. Explore: 16. Dig: 16. Gold: 1. Cash 5000. Area stats: {P90 = 2.500000, Avg = 1.544433}
+Licenses: 0
+Processed: 54385. Area explore: 8. Explore: 16. Dig: 16. Gold: 1. Cash 4999. Area stats: {P90 = 3.000000, Avg = 1.562866}
+Licenses: 0
+Processed: 73275. Area explore: 8. Explore: 16. Dig: 16. Gold: 1. Cash 4999. Area stats: {P90 = 3.000000, Avg = 1.590632}
+Licenses: 0
+Processed: 107830. Area explore: 8. Explore: 16. Dig: 16. Gold: 1. Cash 5000. Area stats: {P90 = 3.000000, Avg = 1.568948}
+Licenses: 2
+Processed: 141090. Area explore: 8. Explore: 16. Dig: 16. Gold: 1. Cash 4999. Area stats: {P90 = 3.000000, Avg = 1.567402}
+----------
+Total = 15680MiB, Free = 804MiB, UsedPercent = 69.194848
+TotalAlloc = 532 MiB    Alloc = 102 MiB Sys = 208 MiB
+Cpu: 33.333333. Process: 32.508280
+----------
+Licenses: 0
+Processed: 160460. Area explore: 8. Explore: 16. Dig: 16. Gold: 1. Cash 4999. Area stats: {P90 = 3.000000, Avg = 1.564200}
+Licenses: 0
+Processed: 193370. Area explore: 8. Explore: 16. Dig: 16. Gold: 1. Cash 4999. Area stats: {P90 = 3.000000, Avg = 1.562539}
+Licenses: 0
+Processed: 212325. Area explore: 8. Explore: 16. Dig: 16. Gold: 1. Cash 5000. Area stats: {P90 = 3.000000, Avg = 1.560109}
+Licenses: 3
+Processed: 246515. Area explore: 8. Explore: 16. Dig: 16. Gold: 1. Cash 4999. Area stats: {P90 = 3.000000, Avg = 1.555165}
+Licenses: 0
+Processed: 265850. Area explore: 8. Explore: 16. Dig: 16. Gold: 1. Cash 5000. Area stats: {P90 = 3.000000, Avg = 1.554340}
+# TYPE in_flight_total gauge
+in_flight_total 18
+# TYPE request_duration_histogram_seconds histogram
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/cash",le="0.1"} 2792
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/cash",le="1"} 2792
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/cash",le="+Inf"} 2792
+request_duration_histogram_seconds_sum{code="200",method="post",path="/cash"} 96.84887637599968
+request_duration_histogram_seconds_count{code="200",method="post",path="/cash"} 2792
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/dig",le="0.1"} 2802
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/dig",le="1"} 2802
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/dig",le="+Inf"} 2802
+request_duration_histogram_seconds_sum{code="200",method="post",path="/dig"} 100.4897012690001
+request_duration_histogram_seconds_count{code="200",method="post",path="/dig"} 2802
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/explore",le="0.1"} 34107
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/explore",le="1"} 34133
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/explore",le="+Inf"} 34141
+request_duration_histogram_seconds_sum{code="200",method="post",path="/explore"} 1237.1146761050036
+request_duration_histogram_seconds_count{code="200",method="post",path="/explore"} 34141
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/licenses",le="0.1"} 3019
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/licenses",le="1"} 3020
+request_duration_histogram_seconds_bucket{code="200",method="post",path="/licenses",le="+Inf"} 3021
+request_duration_histogram_seconds_sum{code="200",method="post",path="/licenses"} 107.2965964659995
+request_duration_histogram_seconds_count{code="200",method="post",path="/licenses"} 3021
+request_duration_histogram_seconds_bucket{code="404",method="post",path="/dig",le="0.1"} 12284
+request_duration_histogram_seconds_bucket{code="404",method="post",path="/dig",le="1"} 12288
+request_duration_histogram_seconds_bucket{code="404",method="post",path="/dig",le="+Inf"} 12288
+request_duration_histogram_seconds_sum{code="404",method="post",path="/dig"} 437.44865743600155
+request_duration_histogram_seconds_count{code="404",method="post",path="/dig"} 12288
+request_duration_histogram_seconds_bucket{code="502",method="post",path="/licenses",le="0.1"} 2
+request_duration_histogram_seconds_bucket{code="502",method="post",path="/licenses",le="1"} 2
+request_duration_histogram_seconds_bucket{code="502",method="post",path="/licenses",le="+Inf"} 2
+request_duration_histogram_seconds_sum{code="502",method="post",path="/licenses"} 0.089334419
+request_duration_histogram_seconds_count{code="502",method="post",path="/licenses"} 2
+request_duration_histogram_seconds_bucket{code="503",method="post",path="/cash",le="0.1"} 394
+request_duration_histogram_seconds_bucket{code="503",method="post",path="/cash",le="1"} 394
+request_duration_histogram_seconds_bucket{code="503",method="post",path="/cash",le="+Inf"} 394
+request_duration_histogram_seconds_sum{code="503",method="post",path="/cash"} 13.90877133
+request_duration_histogram_seconds_count{code="503",method="post",path="/cash"} 394
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/explore",le="0.1"} 116
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/explore",le="1"} 116
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/explore",le="+Inf"} 124
+request_duration_histogram_seconds_sum{code="555",method="post",path="/explore"} 8.266789282000007
+request_duration_histogram_seconds_count{code="555",method="post",path="/explore"} 124
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/licenses",le="0.1"} 10
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/licenses",le="1"} 10
+request_duration_histogram_seconds_bucket{code="555",method="post",path="/licenses",le="+Inf"} 11
+request_duration_histogram_seconds_sum{code="555",method="post",path="/licenses"} 1.033428421
+request_duration_histogram_seconds_count{code="555",method="post",path="/licenses"} 11
+Licenses: 0
+Processed: 298775. Area explore: 8. Explore: 16. Dig: 16. Gold: 1. Cash 4999. Area stats: {P90 = 3.000000, Avg = 1.556379}
+----------
+Total = 15680MiB, Free = 620MiB, UsedPercent = 71.183993
+TotalAlloc = 1178 MiB   Alloc = 224 MiB Sys = 411 MiB
+Cpu: 19.047619. Process: 33.901892
+----------
+
