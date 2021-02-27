@@ -38,7 +38,7 @@ func main() {
 		for {
 			fmt.Printf("Minutes: %.1f. Cash %d. Cash queue %d.\n", time.Since(start).Minutes(), totalCash, len(cashChan))
 			if isRemote {
-				time.Sleep(5 * time.Minute)
+				time.Sleep(5*time.Minute - 20*time.Second)
 			} else {
 				time.Sleep(10 * time.Second)
 			}
@@ -81,22 +81,24 @@ func main() {
 	max, _ := stats.Max(amounts[:])
 	min, _ := stats.Min(amounts[:])
 	mean, _ := stats.Mean(amounts[:])
-	fmt.Printf("Max = %0.2f. Min = %0.2f. Avg = %0.2f\n", max, min, mean)
+	p10, _ := stats.Percentile(amounts[:], 10)
+	fmt.Printf("Max = %0.2f. Min = %0.2f. Avg = %0.2f, P10 = %0.2f\n", max, min, mean, p10)
 
 	for w := 0; w < diggers; w++ {
-		go explore2(mineClient, w, diggers, areas[:], cashChan)
+		go dig(mineClient, w, diggers, areas[:], mean, cashChan)
 	}
 
 	select {}
 }
 
-func explore2(mineClient *client.MineClient, id int, total int, explores []models.ExploreResp, cashChan chan int) {
+func dig(mineClient *client.MineClient, id int, total int, explores []models.ExploreResp, min float64, cashChan chan int) {
 	var license *models.License
 	for idx := id; idx < len(explores); idx += total {
 		area := explores[idx]
 		totalLeft := area.Amount
-		for i := area.Area.PosX; i < area.Area.PosX+area.Area.SizeX; i++ {
-			for j := area.Area.PosY; j < area.Area.PosY+area.Area.SizeY; j++ {
+		exhausted := false
+		for i := area.Area.PosX; i < area.Area.PosX+area.Area.SizeX && !exhausted; i++ {
+			for j := area.Area.PosY; j < area.Area.PosY+area.Area.SizeY && !exhausted; j++ {
 				for {
 					exploreRes, exploreErr := mineClient.Explore(&models.Area{PosX: i, PosY: j, SizeX: 1, SizeY: 1})
 					if exploreErr == nil {
@@ -121,6 +123,9 @@ func explore2(mineClient *client.MineClient, id int, total int, explores []model
 						}
 						break
 					}
+				}
+				if float64(totalLeft) < min {
+					exhausted = true
 				}
 			}
 		}

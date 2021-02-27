@@ -2,44 +2,36 @@ package client
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"goldrush/models"
-	"net/http"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/prometheus/common/expfmt"
+
+	jsoniter "github.com/json-iterator/go"
+	"github.com/valyala/fasthttp"
 )
+
+var json = jsoniter.ConfigFastest
 
 type MineClient struct {
 	host     string
-	client   *http.Client
 	registry *prometheus.Registry
+	duration *prometheus.HistogramVec
+	inFlight prometheus.Gauge
 }
 
 func NewMineClient(host string) *MineClient {
 	registry := prometheus.NewRegistry()
-
-	return &MineClient{
-		host: host,
-		client: &http.Client{
-			Transport: instrumentTransport(http.DefaultTransport, registry),
-		},
-		registry: registry,
-	}
-}
-
-func instrumentTransport(next http.RoundTripper, registry *prometheus.Registry) promhttp.RoundTripperFunc {
 	duration := prometheus.NewHistogramVec(
 		prometheus.HistogramOpts{
 			Name:    "request_duration_histogram_seconds",
 			Buckets: []float64{.1, 1},
 		},
-		[]string{"code", "method", "path"},
+		[]string{"code", "path"},
 	)
 	inFlight := prometheus.NewGauge(
 		prometheus.GaugeOpts{
@@ -50,24 +42,11 @@ func instrumentTransport(next http.RoundTripper, registry *prometheus.Registry) 
 	registry.MustRegister(duration)
 	registry.MustRegister(inFlight)
 
-	return func(r *http.Request) (*http.Response, error) {
-		inFlight.Inc()
-		defer inFlight.Dec()
-		start := time.Now()
-
-		resp, err := next.RoundTrip(r)
-
-		labels := prometheus.Labels{}
-		labels["method"] = strings.ToLower(r.Method)
-		labels["path"] = strings.ToLower(r.URL.Path)
-		if err == nil {
-			labels["code"] = strconv.Itoa(resp.StatusCode)
-		} else {
-			labels["code"] = strconv.Itoa(555)
-		}
-		duration.With(labels).Observe(time.Since(start).Seconds())
-
-		return resp, err
+	return &MineClient{
+		host:     host,
+		registry: registry,
+		duration: duration,
+		inFlight: inFlight,
 	}
 }
 
@@ -95,8 +74,8 @@ func (client *MineClient) url(path string) string {
 func (client *MineClient) Explore(area *models.Area) (models.ExploreResp, error) {
 	req, _ := json.Marshal(area)
 	exploreRes := models.ExploreResp{}
-	err := client.safePost("explore", req, successfulResponse, func(res *http.Response) error {
-		return json.NewDecoder(res.Body).Decode(&exploreRes)
+	err := client.safePost("explore", req, successfulResponse, func(res *fasthttp.Response) error {
+		return json.Unmarshal(res.Body(), &exploreRes)
 	})
 	return exploreRes, err
 }
@@ -104,11 +83,11 @@ func (client *MineClient) Explore(area *models.Area) (models.ExploreResp, error)
 func (client *MineClient) Dig(posX int, posY int, depth int, licenseId int) ([]string, error) {
 	req, _ := json.Marshal(models.DigRequest{PosX: posX, PosY: posY, Depth: depth, LicenseID: licenseId})
 	var gold []string
-	err := client.safePost("dig", req, func(res *http.Response) bool {
-		return res.StatusCode == 200 || res.StatusCode == 404
-	}, func(res *http.Response) error {
-		if res.StatusCode == 200 {
-			return json.NewDecoder(res.Body).Decode(&gold)
+	err := client.safePost("dig", req, func(res *fasthttp.Response) bool {
+		return res.StatusCode() == 200 || res.StatusCode() == 404
+	}, func(res *fasthttp.Response) error {
+		if res.StatusCode() == 200 {
+			return json.Unmarshal(res.Body(), &gold)
 		} else {
 			return nil
 		}
@@ -119,8 +98,8 @@ func (client *MineClient) Dig(posX int, posY int, depth int, licenseId int) ([]s
 func (client *MineClient) IssueLicense(cash []int) (models.License, error) {
 	req, _ := json.Marshal(cash)
 	license := models.License{}
-	err := client.safePost("licenses", req, successfulResponse, func(res *http.Response) error {
-		return json.NewDecoder(res.Body).Decode(&license)
+	err := client.safePost("licenses", req, successfulResponse, func(res *fasthttp.Response) error {
+		return json.Unmarshal(res.Body(), &license)
 	})
 	return license, err
 }
@@ -128,31 +107,59 @@ func (client *MineClient) IssueLicense(cash []int) (models.License, error) {
 func (client *MineClient) Cash(gold string) ([]int, error) {
 	req, _ := json.Marshal(gold)
 	var wallet []int
-	err := client.safePost("cash", req, successfulResponse, func(res *http.Response) error {
-		return json.NewDecoder(res.Body).Decode(&wallet)
+	err := client.safePost("cash", req, successfulResponse, func(res *fasthttp.Response) error {
+		return json.Unmarshal(res.Body(), &wallet)
 	})
 	return wallet, err
 }
 
-type isSuccess func(*http.Response) bool
-type callback func(*http.Response) error
+type isSuccess func(*fasthttp.Response) bool
+type callback func(*fasthttp.Response) error
 
-func (client *MineClient) safePost(path string, req []byte, isSuccess isSuccess, responseCallback callback) error {
-	res, err := client.client.Post(client.url(path), "application/json", bytes.NewBuffer(req))
+var strPost = []byte("POST")
+var jsonContentType = []byte("application/json")
+
+func (client *MineClient) safePost(path string, reqBody []byte, isSuccess isSuccess, responseCallback callback) error {
+	client.inFlight.Inc()
+	defer client.inFlight.Dec()
+	start := time.Now()
+
+	req := fasthttp.AcquireRequest()
+	defer fasthttp.ReleaseRequest(req)
+	req.SetBody(reqBody)
+	req.Header.SetMethodBytes(strPost)
+	req.Header.SetContentTypeBytes(jsonContentType)
+	req.SetRequestURI(client.url(path))
+
+	res := fasthttp.AcquireResponse()
+	defer fasthttp.ReleaseResponse(res)
+
+	err := fasthttp.Do(req, res)
+
+	var resultError error
 	if err != nil {
-		return fmt.Errorf("The http error was '%s'. Path: /%s", err, path)
+		resultError = fmt.Errorf("The http error was '%s'. Path: /%s", err, path)
 	} else if !isSuccess(res) {
-		return fmt.Errorf("The status was '%d'. Path: /%s", res.StatusCode, path)
+		resultError = fmt.Errorf("The status was '%d'. Path: /%s", res.StatusCode(), path)
 	} else {
 		callbackErr := responseCallback(res)
 		if callbackErr != nil {
-			return fmt.Errorf("The parsing error was '%s'. Path: /%s", callbackErr, path)
-		} else {
-			return nil
+			resultError = fmt.Errorf("The parsing error was '%s'. Path: /%s", callbackErr, path)
 		}
 	}
+
+	labels := prometheus.Labels{}
+	labels["path"] = strings.ToLower(string(req.URI().Path()))
+	if err == nil {
+		labels["code"] = strconv.Itoa(res.StatusCode())
+	} else {
+		labels["code"] = strconv.Itoa(555)
+	}
+	client.duration.With(labels).Observe(time.Since(start).Seconds())
+
+	return resultError
 }
 
-func successfulResponse(res *http.Response) bool {
-	return res.StatusCode == 200
+func successfulResponse(res *fasthttp.Response) bool {
+	return res.StatusCode() == fasthttp.StatusOK
 }
