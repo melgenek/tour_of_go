@@ -1,0 +1,206 @@
+2x2 java priority queue with streaming
+
+
+*** CLIENT REPORT ***
+Balance:        82483
+Licenses active:        1
+Free licenses issued:   2
+Paid licenses issued:   2417
+Single cell explores done:      7979
+Single cell explores with treasures found:      2177
+Single cell explore treasure found rate:        0.27284
+Digs done:      12088
+Dig success rate:       0.18523
+Treasures found:        2239
+Total found treasure value:     84900
+Treasures exchanged:    2239
+Total exchanged treasure value: 84900
+Treasure exchange efficiency:   1.00000
+Treasures not exchanged:        0
+127.0.0.1 - - [28/Feb/2021 03:46:20] "POST /explore HTTP/1.1" 200 -
+
+*** WORLD REPORT ***
+Configuration:  3500 x 3500 x 10
+Total treasures:        475533
+Total treasure value:   18607711
+Avg treasure value:     39.13
+Treasure density:       0.00388
+Treasure value density: 0.15190
+* LAYER STATS *
+Layer#  Tot.treas       Tot.treas.val   Avg.treas.val   Treas.dens      Treas.val.dens
+     1      45233              320175            7.08      0.00369             0.02614
+     2      46612              659325           14.14      0.00381             0.05382
+     3      47375             1000793           21.12      0.00387             0.08170
+     4      48165             1355455           28.14      0.00393             0.11065
+     5      47820             1689972           35.34      0.00390             0.13796
+     6      47991             2039478           42.50      0.00392             0.16649
+     7      48219             2381462           49.39      0.00394             0.19441
+     8      47951             2721355           56.75      0.00391             0.22215
+     9      48054             3046650           63.40      0.00392             0.24871
+    10      48113             3393046           70.52      0.00393             0.27698
+Final balance: 82483
+
+
+
+
+
+
+Starting. Cpus: 8
+PT12.562S. Total: 3108
+PT22.568S. Total: 10194
+PT32.569S. Total: 16348
+PT42.57S. Total: 23735
+PT52.57S. Total: 31684
+# HELP error_total error
+# TYPE error_total counter
+error_total{path="dig",} 4571.0
+# HELP request_latency request_latency
+# TYPE request_latency histogram
+request_latency_bucket{path="dig",le="0.1",} 5618.0
+request_latency_bucket{path="dig",le="1.0",} 5618.0
+request_latency_bucket{path="dig",le="+Inf",} 5618.0
+request_latency_count{path="dig",} 5618.0
+request_latency_sum{path="dig",} 27.65212817900003
+request_latency_bucket{path="licenses",le="0.1",} 1125.0
+request_latency_bucket{path="licenses",le="1.0",} 1125.0
+request_latency_bucket{path="licenses",le="+Inf",} 1125.0
+request_latency_count{path="licenses",} 1125.0
+request_latency_sum{path="licenses",} 5.334507936999996
+request_latency_bucket{path="explore",le="0.1",} 14452.0
+request_latency_bucket{path="explore",le="1.0",} 14452.0
+request_latency_bucket{path="explore",le="+Inf",} 14453.0
+request_latency_count{path="explore",} 14453.0
+request_latency_sum{path="explore",} 78.94322684900015
+request_latency_bucket{path="cash",le="0.1",} 1047.0
+request_latency_bucket{path="cash",le="1.0",} 1047.0
+request_latency_bucket{path="cash",le="+Inf",} 1047.0
+request_latency_count{path="cash",} 1047.0
+request_latency_sum{path="cash",} 7.057509410999999
+# HELP in_progress in_progress
+# TYPE in_progress gauge
+in_progress{path="dig",} 0.0
+in_progress{path="licenses",} 0.0
+in_progress{path="explore",} 1.0
+in_progress{path="cash",} 160.0
+# HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
+# TYPE process_cpu_seconds_total counter
+process_cpu_seconds_total 65.63
+# HELP process_start_time_seconds Start time of the process since unix epoch in seconds.
+# TYPE process_start_time_seconds gauge
+process_start_time_seconds 1.614480256281E9
+# HELP process_open_fds Number of open file descriptors.
+# TYPE process_open_fds gauge
+process_open_fds 128.0
+# HELP process_max_fds Maximum number of open file descriptors.
+# TYPE process_max_fds gauge
+process_max_fds 1048576.0
+# HELP process_virtual_memory_bytes Virtual memory size in bytes.
+# TYPE process_virtual_memory_bytes gauge
+process_virtual_memory_bytes 9.708990464E9
+# HELP process_resident_memory_bytes Resident memory size in bytes.
+# TYPE process_resident_memory_bytes gauge
+process_resident_memory_bytes 7.08231168E8
+# HELP success_total success
+# TYPE success_total counter
+success_total{path="dig",} 1047.0
+success_total{path="licenses",} 1125.0
+success_total{path="explore",} 14454.0
+success_total{path="cash",} 1047.0
+# HELP error_created error
+# TYPE error_created gauge
+error_created{path="dig",} 1.614480263528E9
+# HELP request_latency_created request_latency
+# TYPE request_latency_created gauge
+request_latency_created{path="dig",} 1.61448026344E9
+request_latency_created{path="licenses",} 1.614480263414E9
+request_latency_created{path="explore",} 1.614480259689E9
+request_latency_created{path="cash",} 1.614480263493E9
+# HELP success_created success
+# TYPE success_created gauge
+success_created{path="dig",} 1.614480263453E9
+success_created{path="licenses",} 1.614480263427E9
+success_created{path="explore",} 1.614480263236E9
+success_created{path="cash",} 1.614480263542E9
+
+PT1M2.571S. Total: 39649
+PT1M12.571S. Total: 46612
+PT1M22.572S. Total: 54343
+PT1M32.572S. Total: 61829
+PT1M42.573S. Total: 69295
+PT1M52.573S. Total: 77101
+# HELP error_total error
+# TYPE error_total counter
+error_total{path="dig",} 9778.0
+# HELP request_latency request_latency
+# TYPE request_latency histogram
+request_latency_bucket{path="dig",le="0.1",} 12000.0
+request_latency_bucket{path="dig",le="1.0",} 12000.0
+request_latency_bucket{path="dig",le="+Inf",} 12000.0
+request_latency_count{path="dig",} 12000.0
+request_latency_sum{path="dig",} 57.63751787300016
+request_latency_bucket{path="licenses",le="0.1",} 2401.0
+request_latency_bucket{path="licenses",le="1.0",} 2401.0
+request_latency_bucket{path="licenses",le="+Inf",} 2401.0
+request_latency_count{path="licenses",} 2401.0
+request_latency_sum{path="licenses",} 11.160758899000012
+request_latency_bucket{path="explore",le="0.1",} 30729.0
+request_latency_bucket{path="explore",le="1.0",} 30729.0
+request_latency_bucket{path="explore",le="+Inf",} 30730.0
+request_latency_count{path="explore",} 30730.0
+request_latency_sum{path="explore",} 160.02192042100012
+request_latency_bucket{path="cash",le="0.1",} 2222.0
+request_latency_bucket{path="cash",le="1.0",} 2222.0
+request_latency_bucket{path="cash",le="+Inf",} 2222.0
+request_latency_count{path="cash",} 2222.0
+request_latency_sum{path="cash",} 14.460021104999965
+# HELP in_progress in_progress
+# TYPE in_progress gauge
+in_progress{path="dig",} 1.0
+in_progress{path="licenses",} 0.0
+in_progress{path="explore",} 1.0
+in_progress{path="cash",} 317.0
+# HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
+# TYPE process_cpu_seconds_total counter
+process_cpu_seconds_total 94.57
+# HELP process_start_time_seconds Start time of the process since unix epoch in seconds.
+# TYPE process_start_time_seconds gauge
+process_start_time_seconds 1.614480256281E9
+# HELP process_open_fds Number of open file descriptors.
+# TYPE process_open_fds gauge
+process_open_fds 128.0
+# HELP process_max_fds Maximum number of open file descriptors.
+# TYPE process_max_fds gauge
+process_max_fds 1048576.0
+# HELP process_virtual_memory_bytes Virtual memory size in bytes.
+# TYPE process_virtual_memory_bytes gauge
+process_virtual_memory_bytes 9.708990464E9
+# HELP process_resident_memory_bytes Resident memory size in bytes.
+# TYPE process_resident_memory_bytes gauge
+process_resident_memory_bytes 8.0590848E8
+# HELP success_total success
+# TYPE success_total counter
+success_total{path="dig",} 2222.0
+success_total{path="licenses",} 2401.0
+success_total{path="explore",} 30730.0
+success_total{path="cash",} 2222.0
+# HELP error_created error
+# TYPE error_created gauge
+error_created{path="dig",} 1.614480263528E9
+# HELP request_latency_created request_latency
+# TYPE request_latency_created gauge
+request_latency_created{path="dig",} 1.61448026344E9
+request_latency_created{path="licenses",} 1.614480263414E9
+request_latency_created{path="explore",} 1.614480259689E9
+request_latency_created{path="cash",} 1.614480263493E9
+# HELP success_created success
+# TYPE success_created gauge
+success_created{path="dig",} 1.614480263453E9
+success_created{path="licenses",} 1.614480263427E9
+success_created{path="explore",} 1.614480263236E9
+success_created{path="cash",} 1.614480263542E9
+
+PT2M2.574S. Total: 84427
+
+
+
+
