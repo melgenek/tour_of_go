@@ -316,12 +316,19 @@ class World:
             self._stats.free_licenses_issued += 1
             return self._issue_new_license(3)
 
-        coin = coins[0]
-
-        if coin not in self._coins:
+        if not (set(coins) <= self._coins):
             raise wex.NotFound()
 
-        self._coins.remove(coin)
-        self._balance -= 1
+        coins_count = len(coins)
+        for coin in coins:
+            self._coins.remove(coin)
+        self._balance -= coins_count
         self._stats.paid_licenses_issued += 1
-        return self._issue_new_license(5)
+        if coins_count == 1:
+            return self._issue_new_license(5)
+        elif coins_count == 6:
+            return self._issue_new_license(10)
+        elif coins_count == 11:
+            return self._issue_new_license(22)
+        elif coins_count == 21:
+            return self._issue_new_license(42)
