@@ -13,34 +13,47 @@ func main() {
 	Solution(os.Stdin, os.Stdout)
 }
 
-func kruskal(n int32, libraryCost int32, roadCost int32, cities [][]int32) int64 {
-	if libraryCost < roadCost {
-		return int64(n) * int64(libraryCost)
+type UnionSets struct {
+	parents []int32
+	ranks   []int32
+}
+
+func NewUnionSet(size int32) *UnionSets {
+	return &UnionSets{
+		make([]int32, size),
+		make([]int32, size),
+	}
+}
+
+func (sets *UnionSets) make(v int32) {
+	sets.parents[v] = v
+	sets.ranks[v] = 0
+}
+
+func (sets *UnionSets) find(v int32) int32 {
+	if sets.parents[v] == v {
+		return v
 	} else {
-		trees := make([]int, n)
-		for i := range trees {
-			trees[i] = i
+		sets.parents[v] = sets.find(sets.parents[v])
+		return sets.parents[v]
+	}
+}
+
+func (sets *UnionSets) union(a, b int32) bool {
+	a = sets.find(a)
+	b = sets.find(b)
+
+	if a != b {
+		if sets.ranks[a] < sets.ranks[b] {
+			a, b = b, a
 		}
-
-		var totalRoadsCost int64 = 0
-		librariesCount := n
-
-		for _, road := range cities {
-			a, b := road[0]-1, road[1]-1
-			newId, oldId := trees[a], trees[b]
-			if oldId != newId {
-				totalRoadsCost += int64(roadCost)
-				librariesCount -= 1
-				for i, id := range trees {
-					if id == oldId {
-						trees[i] = newId
-					}
-				}
-
-			}
+		sets.parents[b] = a
+		if sets.ranks[a] == sets.ranks[b] {
+			sets.ranks[a]++
 		}
-		fmt.Printf("%v %v\n", totalRoadsCost, librariesCount)
-		return int64(totalRoadsCost) + int64(librariesCount)*int64(libraryCost)
+		return true
+	} else {
+		return false
 	}
 }
 
@@ -48,38 +61,23 @@ func roadsAndLibraries(n int32, libraryCost int32, roadCost int32, cities [][]in
 	if libraryCost < roadCost {
 		return int64(n) * int64(libraryCost)
 	} else {
-		graph := make([][]int32, n)
+		trees := NewUnionSet(n)
+		for i := 0; int32(i) < n; i++ {
+			trees.make(int32(i))
+		}
+
+		var totalRoadsCost int64 = 0
+		librariesCount := n
+
 		for _, road := range cities {
 			a, b := road[0]-1, road[1]-1
-			graph[a] = append(graph[a], b)
-			graph[b] = append(graph[b], a)
-		}
-
-		roadsCount := 0
-		librariesCount := 0
-
-		used := make([]bool, n)
-
-		var dfs func(i int32)
-
-		dfs = func(i int32) {
-			used[i] = true
-			for _, to := range graph[i] {
-				if !used[to] {
-					roadsCount += 1
-					dfs(to)
-				}
+			if trees.union(a, b) {
+				totalRoadsCost += int64(roadCost)
+				librariesCount -= 1
 			}
 		}
 
-		for i := 0; int32(i) < n; i++ {
-			if !used[i] {
-				dfs(int32(i))
-				librariesCount += 1
-			}
-		}
-
-		return int64(roadCost)*int64(roadsCount) + int64(librariesCount)*int64(libraryCost)
+		return int64(totalRoadsCost) + int64(librariesCount)*int64(libraryCost)
 	}
 }
 
