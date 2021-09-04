@@ -3,35 +3,27 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Printf("%v\n", maxSubArray([]int{-2, 1, -3, 4, -1, 2, 1, -5, 4}))
-	fmt.Printf("%v\n", maxSubArray([]int{-1}))
+	fmt.Printf("%v\n", maxSubArray([]int{-2, 1, -3, 4, -1, 2, 1, -5, 4}) == 6)
+	fmt.Printf("%v\n", maxSubArray([]int{-1}) == -1)
+	fmt.Printf("%v\n", maxSubArray([]int{1}) == 1)
+	fmt.Printf("%v\n", maxSubArray([]int{5, 4, -1, 7, 8}) == 23)
 }
 
 func maxSubArray(nums []int) int {
-	_, _, v, arr := max(nums)
-	fmt.Printf("%v\n", arr)
-	return v
-}
+	maxSum := -999999
 
-func max(nums []int) (int, []int, int, []int) {
-	if len(nums) == 0 {
-		return -99999999, []int{}, -99999999, []int{}
-	} else {
-		first := nums[0]
-		currentMax, currentArr, max, arr := max(nums[1:])
-
-		if first >= currentMax && currentMax <= 0 {
-			currentMax = first
-			currentArr = []int{first}
+	currentSum := 0
+	for i := 0; i < len(nums); i++ {
+		if currentSum < 0 {
+			currentSum = nums[i]
 		} else {
-			currentMax += first
-			currentArr = append([]int{first}, currentArr...)
+			currentSum += nums[i]
 		}
 
-		if currentMax > max {
-			return currentMax, currentArr, currentMax, currentArr
-		} else {
-			return currentMax, currentArr, max, arr
+		if currentSum > maxSum {
+			maxSum = currentSum
 		}
 	}
+
+	return maxSum
 }
