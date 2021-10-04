@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"sort"
 )
 
 func main() {
@@ -29,35 +28,49 @@ func main() {
 	fmt.Printf("%v\n", scheduleCourse([][]int{
 		{7, 17}, {3, 12}, {10, 20}, {9, 10}, {5, 20}, {10, 19}, {4, 18},
 	}) == 4)
-}
-
-type Course struct {
-	days     int
-	deadline int
-	cost     int
+	fmt.Printf("%v\n", scheduleCourse([][]int{
+		{10, 20}, {4, 13}, {4, 4}, {3, 11}, {3, 5}, {3, 5},
+	}) == 4)
+	fmt.Printf("%v\n", scheduleCourse([][]int{
+		{10, 12}, {6, 15}, {1, 12}, {3, 20}, {10, 19},
+	}) == 4)
+	fmt.Printf("%v\n", scheduleCourse([][]int{
+		{914, 9927}, {333, 712}, {163, 5455}, {835, 5040}, {905, 8433}, {417, 8249}, {921, 9553}, {913, 7394}, {303, 7525}, {582, 8658}, {86, 957}, {40, 9152}, {600, 6941}, {466, 5775}, {718, 8485}, {34, 3903}, {380, 9996}, {316, 7755},
+	}))
 }
 
 func scheduleCourse(input [][]int) int {
-	courses := make([]Course, 0)
-	for _, course := range input {
-		c := Course{course[0], course[1], course[1] + course[0]}
-		if c.cost > 0 {
-			courses = append(courses, c)
+	used := make([]bool, len(input))
+	cache := make(map[string]int)
+
+	return rec(input, used, cache, 0, 0, 0)
+}
+
+func rec(input [][]int, used []bool, cache map[string]int, i int, time int, courses int) int {
+	key := fmt.Sprintf("%d_%d", i, time)
+	cached, found := cache[key]
+	if found {
+		return cached
+	} else if i == len(input) {
+		return courses
+	} else {
+		res := courses
+		for j := 0; j < len(input); j++ {
+			if !used[j] && input[j][0]+time <= input[j][1] {
+				used[j] = true
+				res = max(res, rec(input, used, cache, i+1, time+input[j][0], courses+1))
+				used[j] = false
+			}
 		}
+		cache[key] = res
+		return res
 	}
-	sort.Slice(courses, func(i, j int) bool {
-		return courses[i].cost < courses[j].cost
-	})
+}
 
-	total := 0
-	day := 0
-
-	for _, course := range courses {
-		if day+course.days <= course.deadline {
-			total += 1
-			day += course.days
-		}
+func max(a, b int) int {
+	if a > b {
+		return a
+	} else {
+		return b
 	}
-
-	return total
 }
