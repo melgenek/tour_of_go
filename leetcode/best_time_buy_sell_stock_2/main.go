@@ -11,28 +11,19 @@ func main() {
 	fmt.Printf("%v\n", maxProfit([]int{3, 3, 5, 0, 0, 3, 1, 4}) == 8)
 }
 
-const aLot = 99999999
-
 func maxProfit(prices []int) int {
-	res := 0
+	n := len(prices)
+	state := make([][]int, n)
+	state[n-1] = []int{prices[n-1], 0}
 
-	boughtAt := aLot
-	for i := 0; i < len(prices); i++ {
-		res += max(0, prices[i]-boughtAt)
-		boughtAt = prices[i]
+	for i := n - 2; i >= 0; i-- {
+		state[i] = []int{
+			max(prices[i], state[i+1][0]),
+			max(state[i+1][1], state[i+1][0]-prices[i]),
+		}
 	}
 
-	return res
-}
-
-func maxProfit2(prices []int) int {
-	res := 0
-
-	for i := 1; i < len(prices); i++ {
-		res += max(0, prices[i]-prices[i-1])
-	}
-
-	return res
+	return state[0][1]
 }
 
 func max(a, b int) int {

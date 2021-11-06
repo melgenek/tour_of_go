@@ -15,69 +15,26 @@ func main() {
 
 func wordBreak(s string, wordDict []string) bool {
 	dict := make(map[string]bool)
-	longestWord := 0
+	maxWordLen := 0
 	for _, v := range wordDict {
 		dict[v] = true
-
-		if len(v) > longestWord {
-			longestWord = len(v)
+		if len(v) > maxWordLen {
+			maxWordLen = len(v)
 		}
 	}
 
 	n := len(s)
-	memory := make([]bool, n+1)
-	memory[n] = true
+	cache := make([]bool, n+1)
+	cache[n] = true
 	for i := n - 1; i >= 0; i-- {
-		subRes := false
-		for j := min(i+longestWord, n); j > i; j-- {
-			substring := s[i:j]
-			if dict[substring] && memory[j] {
-				subRes = true
+		for j := i + 1; j <= n && j <= i+maxWordLen; j++ {
+			subStr := s[i:j]
+			if dict[subStr] && cache[j] {
+				cache[i] = true
 				break
 			}
 		}
-		memory[i] = subRes
 	}
 
-	return memory[0]
-}
-
-func min(a, b int) int {
-	if a < b {
-		return a
-	} else {
-		return b
-	}
-}
-
-func wordBreak2(s string, wordDict []string) bool {
-	dict := make(map[string]bool)
-	for _, v := range wordDict {
-		dict[v] = true
-	}
-
-	return wb(s, dict)
-}
-
-func wb(s string, dict map[string]bool) bool {
-	if len(s) == 0 {
-		return true
-	} else {
-		cached, found := dict[s]
-		if found {
-			return cached
-		}
-
-		res := false
-		for i := 1; i < len(s); i++ {
-			if dict[s[:i]] {
-				res = wb(s[i:], dict)
-				if res {
-					break
-				}
-			}
-		}
-		dict[s] = res
-		return res
-	}
+	return cache[0]
 }

@@ -12,34 +12,37 @@ func main() {
 }
 
 func reverseWords(s string) string {
+	arr := []byte(s)
+	n := len(arr)
+	for i := 0; i < n/2; i++ {
+		arr[i], arr[n-i-1] = arr[n-i-1], arr[i]
+	}
+
 	var b bytes.Buffer
-
-	start := len(s)
-	end := len(s)
-
-	atLeastOne := false
-	for i := len(s) - 1; i >= 0; i-- {
-		ch := s[i]
-		if ch == ' ' {
-			if start < end {
-				if atLeastOne {
+	start := 0
+	end := 0
+	for end < n {
+		if arr[end] == ' ' {
+			if end != start {
+				if b.Len() > 0 {
 					b.WriteByte(' ')
 				}
-				b.WriteString(s[start:end])
-				atLeastOne = true
+				for k := end - 1; k >= start; k-- {
+					b.WriteByte(arr[k])
+				}
 			}
-			start = i
-			end = i
+			start = end + 1
+			end = start
 		} else {
-			start = i
+			end++
 		}
+	}
+	if end != start && b.Len() > 0 {
+		b.WriteByte(' ')
+	}
+	for k := end - 1; k >= start; k-- {
+		b.WriteByte(arr[k])
 	}
 
-	if start < end {
-		if atLeastOne {
-			b.WriteByte(' ')
-		}
-		b.WriteString(s[start:end])
-	}
 	return b.String()
 }
