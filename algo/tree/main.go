@@ -1,33 +1,36 @@
 package main
 
-import (
-	"fmt"
-	"math"
-)
+import "fmt"
 
 func main() {
-	math.MinInt32
-	//tree := NewTree()
-	//tree.Add(1)
-	//tree.Add(6)
-	//tree.Add(2)
-	//tree.Add(4)
-	//tree.Add(3)
-	//
-	//fmt.Printf("%v\n", tree.ToSlice())
-	//tree.Remove(1)
-	//tree.Add(1)
-	//fmt.Printf("%v\n", tree.ToSlice())
-	//tree.Add(6)
-	//tree.Remove(2)
-	//tree.Add(2)
-	//fmt.Printf("%v\n", tree.ToSlice())
-	//tree.Remove(4)
-	//tree.Add(4)
-	//fmt.Printf("%v\n", tree.ToSlice())
-	//
-	//fmt.Printf("%v\n", tree.Find(10) == false)
-	//fmt.Printf("%v\n", tree.Find(6) == true)
+	tree := NewTree()
+	tree.Add(1)
+	tree.Add(6)
+	tree.Add(2)
+	tree.Add(4)
+	tree.Add(3)
+
+	fmt.Printf("%v\n", tree.ToSlice())
+	tree.Remove(1)
+	tree.Add(1)
+	fmt.Printf("%v\n", tree.ToSlice())
+	tree.Add(6)
+	tree.Remove(2)
+	tree.Add(2)
+	fmt.Printf("%v\n", tree.ToSlice())
+	tree.Remove(4)
+	tree.Add(4)
+	fmt.Printf("%v\n", tree.ToSlice())
+
+	fmt.Printf("%v\n", tree.Find(10) == false)
+	fmt.Printf("%v\n", tree.Find(6) == true)
+
+	fmt.Printf("%v\n", tree.Next(-1) == 1)
+	fmt.Printf("%v\n", tree.Next(1) == 2)
+	fmt.Printf("%v\n", tree.Next(2) == 3)
+	fmt.Printf("%v\n", tree.Next(3) == 4)
+	fmt.Printf("%v\n", tree.Next(4) == 6)
+	fmt.Printf("%v\n", tree.Next(6) == -1)
 
 }
 
@@ -124,5 +127,24 @@ func find(node *Node, v int) bool {
 		return find(node.Left, v)
 	} else {
 		return find(node.Right, v)
+	}
+}
+
+func (t *Tree) Next(v int) int {
+	res := next(t.head, nil, v)
+	if res == nil {
+		return -1
+	} else {
+		return res.Val
+	}
+}
+
+func next(node *Node, successor *Node, v int) *Node {
+	if node == nil {
+		return successor
+	} else if node.Val > v {
+		return next(node.Left, node, v)
+	} else {
+		return next(node.Right, successor, v)
 	}
 }

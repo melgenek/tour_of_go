@@ -14,6 +14,35 @@ func main() {
 	//fmt.Printf("%v\n", longestPalindrome("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))
 }
 
+func longestPalindrome(s string) string {
+	start, end := 0, 0
+	for i := 0; i < len(s); i++ {
+		oddLeft, oddRight := checkPalindromeAtPosition(s, i, i)
+		evenLeft, evenRight := checkPalindromeAtPosition(s, i, i+1)
+
+		if oddRight-oddLeft > end-start {
+			start = oddLeft
+			end = oddRight
+		}
+
+		if evenRight-evenLeft > end-start {
+			start = evenLeft
+			end = evenRight
+		}
+	}
+	return s[start : end+1]
+}
+
+func checkPalindromeAtPosition(s string, left, right int) (int, int) {
+	resLeft, resRight := left, left
+	for left >= 0 && right < len(s) && s[left] == s[right] {
+		resLeft, resRight = left, right
+		right++
+		left--
+	}
+	return resLeft, resRight
+}
+
 func longestPalindromeBrute(s string) string {
 	longest := ""
 
@@ -46,7 +75,7 @@ func longestPalindromeBrute(s string) string {
 	return longest
 }
 
-func longestPalindrome(s string) string {
+func longestPalindromeDynamic(s string) string {
 	result := ""
 	cache := make(map[string]bool)
 
