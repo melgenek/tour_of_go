@@ -14,16 +14,16 @@ func main() {
 func maxProfit(prices []int) int {
 	n := len(prices)
 	state := make([][]int, n)
-	state[n-1] = []int{prices[n-1], 0}
+	state[0] = []int{0, -prices[0]}
 
-	for i := n - 2; i >= 0; i-- {
+	for i := 1; i < n; i++ {
 		state[i] = []int{
-			max(prices[i], state[i+1][0]),
-			max(state[i+1][1], state[i+1][0]-prices[i]),
+			max(state[i-1][0], state[i-1][1]+prices[i]),
+			max(state[i-1][1], state[i-1][0]-prices[i]),
 		}
 	}
 
-	return state[0][1]
+	return state[n-1][0]
 }
 
 func max(a, b int) int {
